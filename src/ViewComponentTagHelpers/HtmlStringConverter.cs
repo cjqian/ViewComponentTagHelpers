@@ -14,7 +14,6 @@ namespace ViewComponentTagHelpers
         public static object ConvertValue(object value, int type)
         {
             string sValue = value.ToString();
-   
 
             switch (type)
             {
