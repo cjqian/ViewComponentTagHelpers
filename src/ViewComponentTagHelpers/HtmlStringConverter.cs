@@ -1,33 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Html;
 
 namespace ViewComponentTagHelpers
 {
-    public class HtmlStringConverter
+    //Needs to be of type String
+    public class HtmlStringConverter : TypeConverter
     {
-        public static readonly int INT_TYPE = 0;
-        public static readonly int STRING_TYPE = 1;
+        private List<Type> _convertibles = new List<Type> { typeof(int), typeof(string) };
 
-        public static object ConvertValue(object value, int type)
+        public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            string sValue = value.ToString();
-   
-
-            switch (type)
+            if (sourceType == typeof(string))
             {
-                //INT_TYPE
-                case 0:
-                    return int.Parse(sValue);
-                    break; 
-                //STRING_TYPE
-                case 1:
-                    return sValue;
-                default:
-                    return sValue;
+                return true;
             }
+
+            return base.CanConvertFrom(context, sourceType);
+        }
+
+        public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+        {
+            if (_convertibles.Contains(destinationType))
+            {
+                return true;
+            }
+
+            return base.CanConvertTo(context, destinationType);
+        }
+
+        public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+        {
+            if (destinationType == typeof(string))
+            {
+                if (value == null) return "";
+                return value;
+            }
+            
+            if (destinationType == typeof(int))
+            {
+                if (value == null) return -1;
+                return int.Parse((string)value);
+            }
+
+            return base.ConvertTo(context, culture, value, destinationType);
         }
     }
 }
