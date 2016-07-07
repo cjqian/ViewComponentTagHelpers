@@ -38,6 +38,13 @@ namespace ViewComponentTagHelpers
         private IEnumerable<TagHelperDescriptor> ResolveViewComponentTagHelpersDescriptors(string prefix)
         {
             var viewComponentDescriptors = _viewComponentDescriptorProvider.GetViewComponents();
+
+            //Here's where we generate the code for tag helpers
+            var rootDirectory = "C:\\Users\\t-crqian\\Documents\\Visual Studio 2015\\Projects\\ViewComponentTagHelpers\\src\\ViewComponentTagHelpers\\";
+            var rootFile = "ViewComponentTagHelpersTemplate.txt";
+            ViewComponentTagHelpersGenerator generator = new ViewComponentTagHelpersGenerator(rootDirectory, rootFile);
+            generator.WriteTagHelper("Custom");
+
             var resolvedDescriptors = new List<TagHelperDescriptor>();
 
             foreach (var viewComponentDescriptor in viewComponentDescriptors)

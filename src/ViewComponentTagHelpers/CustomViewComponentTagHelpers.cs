@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
@@ -11,9 +11,9 @@ using System.ComponentModel;
 
 namespace ViewComponentTagHelpers
 {
-    [HtmlTargetElement("Custom")]
+	[HtmlTargetElement("Custom")]
     [TypeConverter(typeof(ObjectConverter))]
-    public class ViewComponentTagHelpers : ITagHelper
+	public class CustomViewComponentTagHelpers : ITagHelper
     {
         private readonly IViewComponentHelper _component;
 
@@ -29,7 +29,7 @@ namespace ViewComponentTagHelpers
 
         }
 
-        public ViewComponentTagHelpers(IViewComponentHelper component)
+	public CustomViewComponentTagHelpers(IViewComponentHelper component)
         {
             _component = component;
         }
