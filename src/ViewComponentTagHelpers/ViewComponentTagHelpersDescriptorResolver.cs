@@ -37,7 +37,6 @@ namespace ViewComponentTagHelpers
 
         private IEnumerable<TagHelperDescriptor> ResolveViewComponentTagHelpersDescriptors(string prefix)
         {
-            //This isn't working.. doesn't get view components.
             var viewComponentDescriptors = _viewComponentDescriptorProvider.GetViewComponents();
             var resolvedDescriptors = new List<TagHelperDescriptor>();
 

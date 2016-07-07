@@ -1,7 +1,9 @@
-﻿<!--This part tests that tag helpers are working. -->
+﻿@using ViewComponentTagHelpers
+
+<!--This part tests that tag helpers are working. -->
 <p asp-visible="1 + 1 == 2">Should be visible</p>
 <p asp-visible="1 + 1 == 3">Should not be visible</p>
 
 <p>Normal ViewComponent invocation: @await Component.InvokeAsync("Custom", new { count = 4, extraValue = "From view." })</p>
-<p>TagHelper ViewComponent invocation: <Custom extraValue="From the best view!" count="90" />
-<p>TagHelper ViewComponent invocation: <Custom extraValue="From the best view..." count=91 />
+<p>TagHelper ViewComponent invocation: <Custom view-component-type="@typeof(CustomViewComponent)" extraValue="From the best view!" count="90" />
+<p>TagHelper ViewComponent invocation: <Custom view-component-type="@typeof(CustomViewComponent)" extraValue="From the best view..." count=91 />

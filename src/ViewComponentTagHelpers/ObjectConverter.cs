@@ -8,13 +8,14 @@ using System.Threading.Tasks;
 namespace ViewComponentTagHelpers
 {
     //Needs to be of type String
-    public class HtmlStringConverter : TypeConverter
+    public class ObjectConverter : TypeConverter
     {
         private List<Type> _convertibles = new List<Type> { typeof(int), typeof(string) };
 
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string))
+            //Everything is an object!
+            if (sourceType == typeof(object))
             {
                 return true;
             }
@@ -37,13 +38,13 @@ namespace ViewComponentTagHelpers
             if (destinationType == typeof(string))
             {
                 if (value == null) return "";
-                return value;
+                return value.ToString();
             }
             
             if (destinationType == typeof(int))
             {
                 if (value == null) return -1;
-                return int.Parse((string)value);
+                return int.Parse(value.ToString());
             }
 
             return base.ConvertTo(context, culture, value, destinationType);
