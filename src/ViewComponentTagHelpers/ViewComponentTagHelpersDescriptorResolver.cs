@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewComponents;
+﻿using Microsoft.AspNetCore.Mvc.Razor.Compilation;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.Razor.Compilation.TagHelpers;
 using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 using System;
@@ -10,17 +11,20 @@ namespace ViewComponentTagHelpers
 {
     public class ViewComponentTagHelpersDescriptorResolver : TagHelperDescriptorResolver, ITagHelperDescriptorResolver
     {
-        private static readonly Type ViewComponentTagHelperType = typeof(ViewComponentTagHelpers);
-
-        private readonly IViewComponentDescriptorProvider _viewComponentDescriptorProvider;
+        //private static readonly Type ViewComponentTagHelperType = typeof(ViewComponentTagHelpers);
+        private readonly ViewComponentTagHelperDescriptorProvider _viewComponentTagHelperDescriptorProvider;
         private IEnumerable<TagHelperDescriptor> _viewComponentTagHelpersDescriptors;
+
+        //do i want an ICompilationService or an IRazorCompilationService??? Check.
+        private ICompilationService _compilationService;
 
         public ViewComponentTagHelpersDescriptorResolver(
             TagHelperTypeResolver typeResolver,
-            IViewComponentDescriptorProvider viewComponentDescriptorProvider)
+            IViewComponentDescriptorProvider viewComponentDescriptorProvider,
+            ICompilationService compilationService)
             :base( false )
         {
-            _viewComponentDescriptorProvider = viewComponentDescriptorProvider;
+            _viewComponentTagHelperDescriptorProvider = new ViewComponentTagHelperDescriptorProvider(viewComponentDescriptorProvider, compilationService);
         }
 
         IEnumerable<TagHelperDescriptor> ITagHelperDescriptorResolver.Resolve(TagHelperDescriptorResolutionContext resolutionContext)
@@ -37,16 +41,49 @@ namespace ViewComponentTagHelpers
 
         private IEnumerable<TagHelperDescriptor> ResolveViewComponentTagHelpersDescriptors(string prefix)
         {
-            var viewComponentDescriptors = _viewComponentDescriptorProvider.GetViewComponents();
-
+            //var viewComponentDescriptors = _viewComponentDescriptorProvider.GetViewComponents();
+            var viewComponentTagHelperDescriptors = _viewComponentTagHelperDescriptorProvider.GetViewComponentTagHelperDescriptors();
             //Here's where we generate the code for tag helpers
+            /*
             var rootDirectory = "C:\\Users\\t-crqian\\Documents\\Visual Studio 2015\\Projects\\ViewComponentTagHelpers\\src\\ViewComponentTagHelpers\\";
             var rootFile = "ViewComponentTagHelpersTemplate.txt";
             ViewComponentTagHelpersGenerator generator = new ViewComponentTagHelpersGenerator(rootDirectory, rootFile);
             generator.WriteTagHelper("Custom");
-
+            */
             var resolvedDescriptors = new List<TagHelperDescriptor>();
 
+            foreach (var viewComponentTagHelperDescriptor in viewComponentTagHelperDescriptors)
+            {
+                IEnumerable<TagHelperAttributeDescriptor> attributeDescriptors;
+                var viewComponentDescriptor = viewComponentTagHelperDescriptor.viewComponentDescriptor;
+                var viewComponentType = viewComponentTagHelperDescriptor.viewComponentType;
+                if (TryGetViewComponentAttributeDescriptors(viewComponentDescriptor.GetType(), out attributeDescriptors))
+                {
+                    //make descriptors out of all strings, and turn this into requiredAttributeList
+                    var attributeDescriptorNames = attributeDescriptors.Select(descriptor => descriptor.Name);
+                    List<TagHelperRequiredAttributeDescriptor> requiredAttributeList = new List<TagHelperRequiredAttributeDescriptor>();
+
+                    foreach (var attributeDescriptorName in attributeDescriptorNames)
+                    {
+                        var curDescriptor = new TagHelperRequiredAttributeDescriptor();
+                        curDescriptor.Name = attributeDescriptorName;
+
+                        requiredAttributeList.Add(curDescriptor);
+                    }
+
+                    resolvedDescriptors.Add(
+                        new TagHelperDescriptor
+                        {
+                            Prefix = prefix,
+                            TagName = viewComponentDescriptor.ShortName,
+                            TypeName = viewComponentType.FullName,
+                            AssemblyName = viewComponentType.GetTypeInfo().Assembly.GetName().Name,
+                            Attributes = attributeDescriptors,
+                            RequiredAttributes = requiredAttributeList
+                        });
+                }
+            }
+            /*
             foreach (var viewComponentDescriptor in viewComponentDescriptors)
             {
                 IEnumerable<TagHelperAttributeDescriptor> attributeDescriptors;
@@ -75,7 +112,7 @@ namespace ViewComponentTagHelpers
                             RequiredAttributes = requiredAttributeList
                         });
                 }
-            }
+            }*/
 
             return resolvedDescriptors;
         }

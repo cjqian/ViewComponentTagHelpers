@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Razor.Internal;
+using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 
 namespace ViewComponentTagHelpers
 {
@@ -19,14 +21,19 @@ namespace ViewComponentTagHelpers
             _lines = System.IO.File.ReadAllLines(_rootDirectory + _templateFile);
         }
 
-        public void WriteTagHelper(string viewComponentName)
+        public string WriteTagHelper(string viewComponentName)
         {
             ModifyAttribute("HtmlTargetElement", viewComponentName);
             ModifyClass(viewComponentName);
 
             //write to file
+            /*
+            var fileInfo = new RelativeFileInfo()
+
+            var tmp = new DefaultRoslynCompilationService.
+            */
             string newFile = viewComponentName + "ViewComponentTagHelpers.cs";
-            System.IO.File.WriteAllLines(_rootDirectory + newFile, _lines);
+            return newFile;
         }
 
         private void ModifyAttribute(string attibuteName, string viewComponentName)
@@ -70,6 +77,7 @@ namespace ViewComponentTagHelpers
 
             lineContent = "public " + className + "(IViewComponentHelper component)";
             _lines[lineNumber] = "\t" + lineContent;
+
         }
 
         //finds the line containing the first instance of the keyword, or -1 if none is found

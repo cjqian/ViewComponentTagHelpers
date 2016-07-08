@@ -4,6 +4,7 @@
 
   "dependencies": {
     "Microsoft.AspNetCore.Mvc.Core": "1.0.0",
+    "Microsoft.AspNetCore.Mvc.Razor": "1.1.0-alpha1-21463",
     "Microsoft.AspNetCore.Mvc.Razor.Host": "1.0.0",
     "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0",
     "Microsoft.Extensions.DependencyInjection": "1.0.0",
