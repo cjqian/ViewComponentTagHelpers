@@ -52,7 +52,7 @@ namespace ViewComponentTagHelpers
         {
             get
             {
-                throw new NotImplementedException();
+				return 1;
             }
         }
 

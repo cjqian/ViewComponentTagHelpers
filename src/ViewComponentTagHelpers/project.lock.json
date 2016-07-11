@@ -306,13 +306,13 @@
           "lib/netstandard1.6/Microsoft.AspNetCore.Mvc.Formatters.Json.dll": {}
         }
       },
-      "Microsoft.AspNetCore.Mvc.Razor/1.1.0-alpha1-21463": {
+      "Microsoft.AspNetCore.Mvc.Razor/1.0.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.AspNetCore.Mvc.Razor.Host": "1.1.0-alpha1-21463",
-          "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.1.0-alpha1-21463",
+          "Microsoft.AspNetCore.Mvc.Razor.Host": "1.0.0",
+          "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.0.0",
           "Microsoft.CodeAnalysis.CSharp": "1.3.0",
-          "Microsoft.Extensions.FileProviders.Composite": "1.1.0-alpha1-21463",
+          "Microsoft.Extensions.FileProviders.Composite": "1.0.0",
           "System.Runtime.Loader": "4.0.0",
           "System.Text.Encoding": "4.0.11"
         },
@@ -656,10 +656,10 @@
           "lib/netstandard1.6/Microsoft.Extensions.DependencyModel.dll": {}
         }
       },
-      "Microsoft.Extensions.FileProviders.Abstractions/1.1.0-alpha1-21463": {
+      "Microsoft.Extensions.FileProviders.Abstractions/1.0.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Extensions.Primitives": "1.1.0-alpha1-21463",
+          "Microsoft.Extensions.Primitives": "1.0.0",
           "System.IO": "4.1.0",
           "System.Resources.ResourceManager": "4.0.1"
         },
@@ -670,10 +670,10 @@
           "lib/netstandard1.0/Microsoft.Extensions.FileProviders.Abstractions.dll": {}
         }
       },
-      "Microsoft.Extensions.FileProviders.Composite/1.1.0-alpha1-21463": {
+      "Microsoft.Extensions.FileProviders.Composite/1.0.0": {
         "type": "package",
         "dependencies": {
-          "Microsoft.Extensions.FileProviders.Abstractions": "1.1.0-alpha1-21463"
+          "Microsoft.Extensions.FileProviders.Abstractions": "1.0.0"
         },
         "compile": {
           "lib/netstandard1.0/Microsoft.Extensions.FileProviders.Composite.dll": {}
@@ -821,7 +821,7 @@
           "lib/netstandard1.3/Microsoft.Extensions.PlatformAbstractions.dll": {}
         }
       },
-      "Microsoft.Extensions.Primitives/1.1.0-alpha1-21463": {
+      "Microsoft.Extensions.Primitives/1.0.0": {
         "type": "package",
         "dependencies": {
           "System.Resources.ResourceManager": "4.0.1",
@@ -2778,12 +2778,12 @@
         "lib/netstandard1.6/Microsoft.AspNetCore.Mvc.Formatters.Json.xml"
       ]
     },
-    "Microsoft.AspNetCore.Mvc.Razor/1.1.0-alpha1-21463": {
-      "sha512": "nmJ/bjcNPB27UZDp0QfdJg91ErKen0tGQbEg9MsTBoO3G9UZU4M+9X9XqodwRlXEYTyykgBmhSxmZOUzzHcXUw==",
+    "Microsoft.AspNetCore.Mvc.Razor/1.0.0": {
+      "sha512": "3pmXSTzHcfDMwwbzo8xCQB64tniFY5xxc8daAECnuCJEKuJyuI6hcRdL9Jqnlmp0V8wsvhsenXVxlXRaa4kGVg==",
       "type": "package",
-      "path": "Microsoft.AspNetCore.Mvc.Razor/1.1.0-alpha1-21463",
+      "path": "Microsoft.AspNetCore.Mvc.Razor/1.0.0",
       "files": [
-        "Microsoft.AspNetCore.Mvc.Razor.1.1.0-alpha1-21463.nupkg.sha512",
+        "Microsoft.AspNetCore.Mvc.Razor.1.0.0.nupkg.sha512",
         "Microsoft.AspNetCore.Mvc.Razor.nuspec",
         "lib/net451/Microsoft.AspNetCore.Mvc.Razor.dll",
         "lib/net451/Microsoft.AspNetCore.Mvc.Razor.xml",
@@ -3066,23 +3066,23 @@
         "lib/netstandard1.6/Microsoft.Extensions.DependencyModel.dll"
       ]
     },
-    "Microsoft.Extensions.FileProviders.Abstractions/1.1.0-alpha1-21463": {
-      "sha512": "E1UniHx5w+Vpd8WqTsbfehEgaz0BSotmj2KDwQ8yxx1Ly1IIsq2CN/GOX+E+kTfAo4VNmD73i2FW+b91VMftVw==",
+    "Microsoft.Extensions.FileProviders.Abstractions/1.0.0": {
+      "sha512": "oPUuCtpKTSIV0GMZYZk93wU1KE9YwnkzgtRPUHnc9JUhX4p6qFLO6ooUiEvDLBXNQFe46Hb29lde7IFxAYTurw==",
       "type": "package",
-      "path": "Microsoft.Extensions.FileProviders.Abstractions/1.1.0-alpha1-21463",
+      "path": "Microsoft.Extensions.FileProviders.Abstractions/1.0.0",
       "files": [
-        "Microsoft.Extensions.FileProviders.Abstractions.1.1.0-alpha1-21463.nupkg.sha512",
+        "Microsoft.Extensions.FileProviders.Abstractions.1.0.0.nupkg.sha512",
         "Microsoft.Extensions.FileProviders.Abstractions.nuspec",
         "lib/netstandard1.0/Microsoft.Extensions.FileProviders.Abstractions.dll",
         "lib/netstandard1.0/Microsoft.Extensions.FileProviders.Abstractions.xml"
       ]
     },
-    "Microsoft.Extensions.FileProviders.Composite/1.1.0-alpha1-21463": {
-      "sha512": "wk2nIl2Ts7Qi1URi1ADfq21uy4zhsOC4tDXDgjZ9M32fmdoYkxxcqxHtQlE2mAEBml2YNOUL3urCeY22Eo74JQ==",
+    "Microsoft.Extensions.FileProviders.Composite/1.0.0": {
+      "sha512": "9Ik7csXG+IlAK7TCN9uuPYUwqY5QK1hblZ+BN+hORu27c7Vwbs0fG0UShqYXRjuN66CFrqE6e3ZTtkcjupo47Q==",
       "type": "package",
-      "path": "Microsoft.Extensions.FileProviders.Composite/1.1.0-alpha1-21463",
+      "path": "Microsoft.Extensions.FileProviders.Composite/1.0.0",
       "files": [
-        "Microsoft.Extensions.FileProviders.Composite.1.1.0-alpha1-21463.nupkg.sha512",
+        "Microsoft.Extensions.FileProviders.Composite.1.0.0.nupkg.sha512",
         "Microsoft.Extensions.FileProviders.Composite.nuspec",
         "lib/netstandard1.0/Microsoft.Extensions.FileProviders.Composite.dll",
         "lib/netstandard1.0/Microsoft.Extensions.FileProviders.Composite.xml"
@@ -3186,12 +3186,12 @@
         "lib/netstandard1.3/Microsoft.Extensions.PlatformAbstractions.xml"
       ]
     },
-    "Microsoft.Extensions.Primitives/1.1.0-alpha1-21463": {
-      "sha512": "4bJAp31A5AcVAbMsCzK8fABpqJ2dheZdgywhc/c2Vo5GG/bXPiEmaEaD/l7XTQl8nlmX8D6SKggUL2uNCfn3Ow==",
+    "Microsoft.Extensions.Primitives/1.0.0": {
+      "sha512": "MVSz1zCYXwVLVsWS9uEtFD7TPcy0PgM/MCaSLku/C53ix+oA4SQkQAXJrONIO7pGHnVd1YuztlEF024qr8OMpw==",
       "type": "package",
-      "path": "Microsoft.Extensions.Primitives/1.1.0-alpha1-21463",
+      "path": "Microsoft.Extensions.Primitives/1.0.0",
       "files": [
-        "Microsoft.Extensions.Primitives.1.1.0-alpha1-21463.nupkg.sha512",
+        "Microsoft.Extensions.Primitives.1.0.0.nupkg.sha512",
         "Microsoft.Extensions.Primitives.nuspec",
         "lib/netstandard1.0/Microsoft.Extensions.Primitives.dll",
         "lib/netstandard1.0/Microsoft.Extensions.Primitives.xml"
@@ -7337,7 +7337,7 @@
   "projectFileDependencyGroups": {
     "": [
       "Microsoft.AspNetCore.Mvc.Core >= 1.0.0",
-      "Microsoft.AspNetCore.Mvc.Razor >= 1.1.0-alpha1-21463",
+      "Microsoft.AspNetCore.Mvc.Razor >= 1.0.0",
       "Microsoft.AspNetCore.Mvc.Razor.Host >= 1.0.0",
       "Microsoft.AspNetCore.Mvc.ViewFeatures >= 1.0.0",
       "Microsoft.Extensions.DependencyInjection >= 1.0.0",

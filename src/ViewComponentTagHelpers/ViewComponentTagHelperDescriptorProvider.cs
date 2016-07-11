@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace ViewComponentTagHelpers
 {
@@ -58,10 +60,9 @@ namespace ViewComponentTagHelpers
                     throw new Exception("YO WHAT THIS VIEW COMPONENT DIDN'T EXIST EARLIER");
                 }
 
-                /*
-                RelativeFileInfo fileInfo = new RelativeFileInfo()
-                */
-                var compilationResult = _compilationService.Compile(null, tagHelperFile);
+                var fileInfo = new DummyFileInfo();
+                RelativeFileInfo relativeFileInfo = new RelativeFileInfo(fileInfo,  "./");
+                var compilationResult = _compilationService.Compile(relativeFileInfo, tagHelperFile);
                 Type compiledType = compilationResult.GetType();
                 var ViewComponentTagHelperDescriptor = new ViewComponentTagHelperDescriptor(viewComponentDescriptor, compiledType);
                 viewComponentTagHelperDescriptors.Append(ViewComponentTagHelperDescriptor);

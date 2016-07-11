@@ -15,9 +15,6 @@ namespace ViewComponentTagHelpers
         private readonly ViewComponentTagHelperDescriptorProvider _viewComponentTagHelperDescriptorProvider;
         private IEnumerable<TagHelperDescriptor> _viewComponentTagHelpersDescriptors;
 
-        //do i want an ICompilationService or an IRazorCompilationService??? Check.
-        private ICompilationService _compilationService;
-
         public ViewComponentTagHelpersDescriptorResolver(
             TagHelperTypeResolver typeResolver,
             IViewComponentDescriptorProvider viewComponentDescriptorProvider,
