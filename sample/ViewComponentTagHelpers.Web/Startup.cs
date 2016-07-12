@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using ViewComponentTagHelpers;
 
 namespace ViewComponentTagHelpers.Web
 {
@@ -12,6 +14,8 @@ namespace ViewComponentTagHelpers.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            //TODO issue this is in the web part!! 
+            services.AddSingleton<ICompilationService, InjectRoslynCompilationService>();
             ViewComponentTagHelpersServiceCollectionExtensions.AddViewComponentTagHelpers(services);
         }
 

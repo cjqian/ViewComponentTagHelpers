@@ -9,12 +9,12 @@ namespace ViewComponentTagHelpers
     public class ViewComponentTagHelperDescriptor
     {
         public readonly ViewComponentDescriptor viewComponentDescriptor;
-        public readonly Type viewComponentType;
+        public readonly Type tagHelperType;
 
         public ViewComponentTagHelperDescriptor(ViewComponentDescriptor descriptor, Type type)
         {
             viewComponentDescriptor = descriptor;
-            viewComponentType = type;
+            tagHelperType = type;
         }
     }
 }

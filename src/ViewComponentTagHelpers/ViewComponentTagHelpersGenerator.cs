@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Razor.Internal;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
+using System.Text;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
+using System.Reflection;
 
 namespace ViewComponentTagHelpers
 {
@@ -21,63 +24,108 @@ namespace ViewComponentTagHelpers
             _lines = System.IO.File.ReadAllLines(_rootDirectory + _templateFile);
         }
 
-        public string WriteTagHelper(string viewComponentName)
+        public string WriteTagHelper(ViewComponentDescriptor viewComponentDescriptor)
         {
-            ModifyAttribute("HtmlTargetElement", viewComponentName);
-            ModifyClass(viewComponentName);
+            var viewComponentName = viewComponentDescriptor.ShortName;
+            var viewComponentType = viewComponentDescriptor.TypeInfo;
 
-            //write to file
-            /*
-            var fileInfo = new RelativeFileInfo()
+            string[] lines = (string[])_lines.Clone();
 
-            var tmp = new DefaultRoslynCompilationService.
-            */
-            string newFile = viewComponentName + "ViewComponentTagHelpers.cs";
-            return newFile;
+            //ViewComponentName
+            lines = FindAndReplace(lines, "[[ViewComponentName]]", viewComponentName);
+
+            //CustomParameters, ParametersObject
+            lines = SetParameters(lines, viewComponentType);
+
+            return LinesToString(lines);
         }
 
-        private void ModifyAttribute(string attibuteName, string viewComponentName)
+        private string[] SetParameters(string[] lines, TypeInfo viewComponentType)
         {
-            int lineNumber = FindLine(attibuteName);
+            //First, set global parameters
+            //Default ref
+            var getSet = "{ get; set; }";
 
-            if (lineNumber == -1)
+            //Get the invoked method of the view component.
+            var invokableMethod = viewComponentType.GetMethods().Where(info => info.Name.StartsWith("Invoke", StringComparison.Ordinal)).FirstOrDefault();
+            if (invokableMethod == null)
             {
-                throw new Exception(attibuteName + " not found in template " + _templateFile);
+                throw new Exception("This view component has no invokable method.");
             }
 
-            string lineContent = MakeAttribute(attibuteName, viewComponentName);
-            _lines[lineNumber] = "\t" + lineContent;
+            //For each parameter, create a new line.
+            var methodParameters = invokableMethod.GetParameters();
+            var methodParameterStrings = new string[methodParameters.Length];
+
+            //Then, make a new object
+            StringBuilder sb = new StringBuilder();
+
+            for (var i = 0; i < methodParameters.Length; i++)
+            {
+                //set the methodParameterStrings
+                var parameter = methodParameters[i];
+                methodParameterStrings[i] = "\tpublic " + parameter.ParameterType.Name + " " + parameter.Name + " " + getSet;
+
+                //and add to object
+                sb.Append(parameter.Name + "=" + parameter.Name);
+
+                if (i < methodParameters.Length - 1)
+                {
+                    sb.Append(",");
+                }
+            }
+
+            //Replace global parameters 
+            lines = FindAndReplace(lines, "[[CustomParameters]]", methodParameterStrings);
+
+            //Replace [[ParametersObject]]
+            lines = FindAndReplace(lines, "[[ParametersObject]]", sb.ToString());
+
+            return lines;
         }
 
-        private void ModifyClass(string viewComponentName)
+        private string LinesToString(string[] lines)
         {
-            string namespaceName = "ViewComponentTagHelpers";
+            StringBuilder sb = new StringBuilder();
 
-            //change the header
-            string classHeader = "public class ";
-            int lineNumber = FindLine(classHeader);
-
-            if (lineNumber == -1)
+            foreach (string line in lines)
             {
-                throw new Exception("Invalid template file. Does not contain class.");
+                sb.AppendLine(line);
             }
 
-            string className = viewComponentName + namespaceName;
-            string lineContent = classHeader + className + " : ITagHelper";
-            _lines[lineNumber] = "\t" + lineContent;
+            return sb.ToString();
+        }
 
-            //then, change the constructor
-            string constructorHeader = "public " + namespaceName;
-            lineNumber = FindLine(constructorHeader);
-
-            if (lineNumber == -1)
+        private string[] FindAndReplace(string[] lines, string before, string after)
+        {
+            for (int i = 0; i < lines.Length; i++)
             {
-                throw new Exception("No constructor found.");
+                if (lines[i].Contains(before))
+                {
+                    lines[i] = lines[i].Replace(before, after);
+                }
             }
 
-            lineContent = "public " + className + "(IViewComponentHelper component)";
-            _lines[lineNumber] = "\t" + lineContent;
+            return lines;
+        }
 
+        private string[] FindAndReplace(string[] lines, string before, string[] after)
+        {
+            var line = FindLine(before);
+            if (line == -1)
+            {
+                throw new Exception(before + " is not found in the template.");
+            }
+
+            var firstPart = new string[line];
+            Array.Copy(lines, 0, firstPart, 0, firstPart.Length);
+
+            //Plus/minus one because we don't want the original [[]] placeholder.
+            var secondPart = new string[lines.Length - line - 1];
+            Array.Copy(lines, line + 1, secondPart, 0, secondPart.Length);
+
+            string[] sumParts = firstPart.Concat(after).ToArray().Concat(secondPart).ToArray();
+            return sumParts;
         }
 
         //finds the line containing the first instance of the keyword, or -1 if none is found
@@ -92,12 +140,6 @@ namespace ViewComponentTagHelpers
             }
 
             return -1;
-        }
-
-        private string MakeAttribute(string attributeName, string attributeValue)
-        {
-            string attributeString = "[" + attributeName + "(\"" + attributeValue + "\")" + "]";
-            return attributeString;
         }
     }
 }

@@ -11,12 +11,12 @@ using System.ComponentModel;
 
 namespace ViewComponentTagHelpers
 {
-    [HtmlTargetElement("[[ViewComponentName]]")]
-    public class [[ViewComponentName]]ViewComponentTagHelpers: TagHelper
+    [HtmlTargetElement("Custom")]
+    public class ViewComponentTagHelpers: TagHelper
     {
         private readonly IViewComponentHelper _viewComponentHelper;
 
-        public [[ViewComponentName]]ViewComponentTagHelpers(IViewComponentHelper viewComponentHelper)
+        public ViewComponentTagHelpers(IViewComponentHelper viewComponentHelper)
         {
             _viewComponentHelper = viewComponentHelper;
         }
@@ -24,21 +24,19 @@ namespace ViewComponentTagHelpers
         [ViewContext]
         public ViewContext ViewContext { get; set; }
 
-        [[CustomParameters]]
+        /* CUSTOM ARGUMENTS */
 
-        public override async void Process(TagHelperContext context, TagHelperOutput output)
+        public override async void Process(ViewComponentTagHelpersHelperContext context, TagHelperOutput output)
         {
             ((DefaultViewComponentHelper)_viewComponentHelper).Contextualize(ViewContext);
-            var viewContent = await _viewComponentHelper.InvokeAsync("[[ViewComponentName]]", new {[[ParametersObject]]});
+            var viewContent = await _viewComponentHelper.InvokeAsync("[ViewComponentTagHelpersName]", "[ArgumentsObject");
             output.Content.SetHtmlContent(viewContent);
         }
-		
-		#pragma warning disable 1998
+  #pragma warning disable 1998
         public virtual async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
             Process(context, output);
         }
-		
-		#pragma warning restore 1998
+#pragma warning restore 1998
     }
 }
