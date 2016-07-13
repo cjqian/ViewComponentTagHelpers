@@ -1,21 +1,3 @@
-﻿@using ViewComponentTagHelpers
-
-<!--This part tests that tag helpers are working. -->
-<p asp-visible="1 + 1 == 2">Should be visible</p>
-<p asp-visible="1 + 1 == 3">Should not be visible</p>
-
-<p>@*Normal ViewComponent invocation: @await Component.InvokeAsync("Custom", new { count = 4, extraValue = "From view." })*@</p>
-<p>TagHelper ViewComponent invocation: <Custom extraValue="From the best view!" count="90" /></p>
-<p>TagHelper ViewComponent invocation: <Custom extraValue="From the best view..." count=91 /></p>
-<br/><br/>
-<!-- This part tests three separate ViewComponentTagHelpers-->
-<p>@*Normal About: @await Component.InvokeAsync("About", new { email = "foo@bar.com", phoneNumber = "555-123-4567" })*@</p>
-<p>About: <About view-component-type="@typeof(AboutViewComponent)" email="foo@bar.com" phoneNumber="555-123-4567"></About></p>
-<br/>
-
-<p>@*Normal Custom: @await Component.InvokeAsync("Custom", new { count=100, extraValue="Testing the extra value!"})*@</p>
-<p>Custom: <Custom view-component-type="@typeof(CustomViewComponent)" extraValue="Testing the extra value!" count="100"></Custom></p>
-<br/>
-
-<p>@*Normal Dan: @await Component.InvokeAsync("Dan", new { color = "blue" })*@</p>
-<p>Dan: <Dan view-component-type="@typeof(DanViewComponent)" color="blue"></Dan></p>
+﻿<p>About: <vc:about email="foo@bar.com" phone-number="555-123-4567" cat="meow" pranav="hey"></vc:about></p>
+<p>DanRoth: <vc:dan-roth color="blue" water="false"></vc:dan-roth></p>
+<p>DanRoth, Self Closing: <vc:dan-roth color="blue" water="false"/></p>

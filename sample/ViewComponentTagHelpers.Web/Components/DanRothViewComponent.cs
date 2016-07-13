@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace ViewComponentTagHelpers
 {
-    public class DanViewComponent : ViewComponent
+    public class DanRothViewComponent : ViewComponent
     {
-        public IViewComponentResult Invoke(string color)
+        public IViewComponentResult Invoke(string color, bool water)
         {
             this.GetType().GetTypeInfo();
-            return View("Dan", new { Color = color });
+            return View("DanRoth", new { Color = color, Water = water });
         }
     }
 }

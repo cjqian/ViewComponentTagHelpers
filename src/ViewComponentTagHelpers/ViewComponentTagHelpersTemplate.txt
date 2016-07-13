@@ -11,7 +11,7 @@ using System.ComponentModel;
 
 namespace ViewComponentTagHelpers
 {
-    [HtmlTargetElement("[[ViewComponentName]]")]
+    [HtmlTargetElement("vc:[[HtmlTargetElement]]")]
     public class [[ViewComponentName]]ViewComponentTagHelpers: TagHelper
     {
         private readonly IViewComponentHelper _viewComponentHelper;
@@ -30,6 +30,7 @@ namespace ViewComponentTagHelpers
         {
             ((DefaultViewComponentHelper)_viewComponentHelper).Contextualize(ViewContext);
             var viewContent = await _viewComponentHelper.InvokeAsync("[[ViewComponentName]]", new {[[ParametersObject]]});
+			output.TagName = "";
             output.Content.SetHtmlContent(viewContent);
         }
 		

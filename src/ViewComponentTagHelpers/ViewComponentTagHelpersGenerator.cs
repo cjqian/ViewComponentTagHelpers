@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc.ViewComponents;
+using System;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Razor.Internal;
-using Microsoft.AspNetCore.Mvc.Razor.Compilation;
-using System.Text;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
 using System.Reflection;
+using System.Text;
 
 namespace ViewComponentTagHelpers
 {
@@ -31,6 +27,9 @@ namespace ViewComponentTagHelpers
 
             string[] lines = (string[])_lines.Clone();
 
+            //HtmlTargetElement
+            string lowerKebab = GetLowerKebab(viewComponentName);
+            lines = FindAndReplace(lines, "[[HtmlTargetElement]]", lowerKebab);
             //ViewComponentName
             lines = FindAndReplace(lines, "[[ViewComponentName]]", viewComponentName);
 
@@ -38,6 +37,29 @@ namespace ViewComponentTagHelpers
             lines = SetParameters(lines, viewComponentType);
 
             return LinesToString(lines);
+        }
+        
+        private string GetLowerKebab(string word)
+        {
+            if (word.Length == 0) return "";
+
+            StringBuilder sb = new StringBuilder();
+            char[] wordArray = word.ToCharArray();
+
+            sb.Append(Char.ToLower(wordArray[0]));
+            for (int i = 1; i < wordArray.Length; i++)
+            {
+                char cur = wordArray[i];
+                if (Char.IsUpper(cur))
+                {
+                    sb.Append("-" + Char.ToLower(cur));
+                } else
+                {
+                    sb.Append(cur);
+                }
+            }
+
+            return sb.ToString();
         }
 
         private string[] SetParameters(string[] lines, TypeInfo viewComponentType)
@@ -53,7 +75,6 @@ namespace ViewComponentTagHelpers
                 throw new Exception("This view component has no invokable method.");
             }
 
-            //For each parameter, create a new line.
             var methodParameters = invokableMethod.GetParameters();
             var methodParameterStrings = new string[methodParameters.Length];
 
@@ -67,7 +88,7 @@ namespace ViewComponentTagHelpers
                 methodParameterStrings[i] = "\tpublic " + parameter.ParameterType.Name + " " + parameter.Name + " " + getSet;
 
                 //and add to object
-                sb.Append(parameter.Name + "=" + parameter.Name);
+                sb.Append(parameter.Name);
 
                 if (i < methodParameters.Length - 1)
                 {
