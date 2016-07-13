@@ -13,13 +13,21 @@ using System.Reflection;
 
 namespace ViewComponentTagHelpers
 {
+    /// <summary>
+    /// Resolves ViewComponentTagHelperDescriptors.
+    /// </summary>
     public class ViewComponentTagHelpersDescriptorResolver : TagHelperDescriptorResolver, ITagHelperDescriptorResolver
     {
-        //private static readonly Type ViewComponentTagHelperType = typeof(ViewComponentTagHelpers);
         private readonly ViewComponentTagHelperDescriptorProvider _viewComponentTagHelperDescriptorProvider;
         private IEnumerable<TagHelperDescriptor> _viewComponentTagHelpersDescriptors;
         private ICompilationService _compilationService;
 
+        /// <summary>
+        /// Creates an instance of the ViewComponentTagHelperDescriptors class.
+        /// </summary>
+        /// <param name="typeResolver"></param>
+        /// <param name="viewComponentDescriptorProvider"></param>
+        /// <param name="compilationService"></param>
         public ViewComponentTagHelpersDescriptorResolver(
             TagHelperTypeResolver typeResolver,
             IViewComponentDescriptorProvider viewComponentDescriptorProvider,
@@ -46,7 +54,7 @@ namespace ViewComponentTagHelpers
         {
             var viewComponentTagHelperDescriptors = _viewComponentTagHelperDescriptorProvider.GetViewComponentTagHelperDescriptors();
 
-            //currently, only runtime
+            //Use the tagHelperDescriptorFactory to create descriptors for each viewCOmponentTagHelperDescriptor.
             TagHelperDescriptorFactory tagHelperDescriptorFactory = new TagHelperDescriptorFactory(false);
             IEnumerable<TagHelperDescriptor> resolvedDescriptors = new List<TagHelperDescriptor>();
 

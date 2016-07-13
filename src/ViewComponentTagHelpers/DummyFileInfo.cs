@@ -1,12 +1,16 @@
-﻿using Microsoft.Extensions.FileProviders;
+﻿// Copyright (c) .NET Foundation. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
+
+using Microsoft.Extensions.FileProviders;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.IO;
 
 namespace ViewComponentTagHelpers
 {
+    /// <summary>
+    /// Used to create an empty IFileInfo type; used when compiling something in memory, not in a physical file.
+    /// Nothing is actually implemented, LOL.
+    /// </summary>
     public class DummyFileInfo : IFileInfo
     {
         public bool Exists

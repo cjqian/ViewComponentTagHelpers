@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 
 namespace ViewComponentTagHelpers
 {
+    /// <summary>
+    /// An instance of MvcRazorHost. We take in the compilation service as well to force compilation of generated tag helper code.
+    /// </summary>
     public class TagHelperMvcRazorHost : MvcRazorHost
     {
         public TagHelperMvcRazorHost(

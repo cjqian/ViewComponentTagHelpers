@@ -3,12 +3,13 @@
 
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace ViewComponentTagHelpers
 {
+    /// <summary>
+    /// A wrapper containing a viewComponentDescriptor and a compiled type for its associated tag helper. 
+    /// Necessary to dynamically compile each view component with a separate tag helper association. 
+    /// </summary>
     public class ViewComponentTagHelperDescriptor
     {
         public readonly ViewComponentDescriptor viewComponentDescriptor;
