@@ -20,10 +20,13 @@ namespace ViewComponentTagHelpers
             ICompilationService compilationService)
             : base(chunkTreeCache, new ViewComponentTagHelpersDescriptorResolver(new TagHelperTypeResolver(), viewComponentDescriptorProvider, compilationService))
         {
+            //Line 21 too long! < 120
+            // CR: Wrap existing resolver instaed of create new
             TagHelperDescriptorResolver = new ViewComponentTagHelpersDescriptorResolver(
                 new TagHelperTypeResolver(),
                 viewComponentDescriptorProvider,
                 compilationService);
         }
     }
+ //CR: ViewCOmponentMvcRazorHost?
 }

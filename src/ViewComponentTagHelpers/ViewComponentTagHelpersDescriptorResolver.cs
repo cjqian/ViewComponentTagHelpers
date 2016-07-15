@@ -19,8 +19,8 @@ namespace ViewComponentTagHelpers
     public class ViewComponentTagHelpersDescriptorResolver : TagHelperDescriptorResolver, ITagHelperDescriptorResolver
     {
         private readonly ViewComponentTagHelperDescriptorProvider _viewComponentTagHelperDescriptorProvider;
+        private readonly ICompilationService _compilationService;
         private IEnumerable<TagHelperDescriptor> _viewComponentTagHelpersDescriptors;
-        private ICompilationService _compilationService;
 
         /// <summary>
         /// Creates an instance of the ViewComponentTagHelperDescriptors class.
@@ -34,6 +34,7 @@ namespace ViewComponentTagHelpers
             ICompilationService compilationService)
             :base( false )
         {
+            // CR: No inherit from tgtyperesovler
             _viewComponentTagHelperDescriptorProvider = new ViewComponentTagHelperDescriptorProvider(viewComponentDescriptorProvider, compilationService);
             _compilationService = compilationService;
         }
@@ -41,7 +42,6 @@ namespace ViewComponentTagHelpers
         IEnumerable<TagHelperDescriptor> ITagHelperDescriptorResolver.Resolve(TagHelperDescriptorResolutionContext resolutionContext)
         {
             var descriptors = base.Resolve(resolutionContext);
-
             if (_viewComponentTagHelpersDescriptors == null)
             {
                 _viewComponentTagHelpersDescriptors = ResolveViewComponentTagHelpersDescriptors(descriptors.FirstOrDefault()?.Prefix ?? string.Empty);
@@ -52,20 +52,25 @@ namespace ViewComponentTagHelpers
 
         private IEnumerable<TagHelperDescriptor> ResolveViewComponentTagHelpersDescriptors(string prefix)
         {
-            var viewComponentTagHelperDescriptors = _viewComponentTagHelperDescriptorProvider.GetViewComponentTagHelperDescriptors();
+            //CR: Just need types, keep list (revert to ViewCOmponentDescirpotrs)
+            var tagHelperTypes = _viewComponentTagHelperDescriptorProvider.GetTagHelperTypes();
 
             //Use the tagHelperDescriptorFactory to create descriptors for each viewCOmponentTagHelperDescriptor.
-            TagHelperDescriptorFactory tagHelperDescriptorFactory = new TagHelperDescriptorFactory(false);
+            //CR: Use vars
+            var tagHelperDescriptorFactory = new TagHelperDescriptorFactory(false);
             IEnumerable<TagHelperDescriptor> resolvedDescriptors = new List<TagHelperDescriptor>();
 
-            foreach (ViewComponentTagHelperDescriptor viewComponentTagHelperDescriptor in viewComponentTagHelperDescriptors)
+            foreach (var tagHelperType in tagHelperTypes)
             {
-                var type = viewComponentTagHelperDescriptor.tagHelperType;
-                var assemblyName = type.GetTypeInfo().Assembly.GetName().Name;
+                var assemblyName = tagHelperType.GetTypeInfo().Assembly.GetName().Name;
+                //CR: Pass error sink from Resolve 
                 var errorSink = new ErrorSink();
-                var curDescriptors = tagHelperDescriptorFactory.CreateDescriptors(assemblyName, type, errorSink);
-
-                resolvedDescriptors = resolvedDescriptors.Union(curDescriptors);
+                //CR: IEnumerable
+                //CR: No abbreviations
+                var curDescriptors = tagHelperDescriptorFactory.CreateDescriptors(assemblyName, tagHelperType, errorSink);
+                
+                // I changed from union
+                resolvedDescriptors = resolvedDescriptors.Concat(curDescriptors);
             }
 
             return resolvedDescriptors;

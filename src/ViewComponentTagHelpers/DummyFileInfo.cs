@@ -1,16 +1,14 @@
-﻿// Copyright (c) .NET Foundation. All rights reserved.
+﻿//TODO: eventually need to write out fileinfo for design time (make work)
+// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using Microsoft.Extensions.FileProviders;
 using System;
 using System.IO;
 
+// This will eventually be implemented for design time.
 namespace ViewComponentTagHelpers
 {
-    /// <summary>
-    /// Used to create an empty IFileInfo type; used when compiling something in memory, not in a physical file.
-    /// Nothing is actually implemented, LOL.
-    /// </summary>
     public class DummyFileInfo : IFileInfo
     {
         public bool Exists

@@ -15,8 +15,10 @@ namespace ViewComponentTagHelpers.Web
         {
             services.AddMvc();
             //TODO issue this is in the web part!! 
+            //CR: Add to services elsewhere
             services.AddSingleton<ICompilationService, InjectRoslynCompilationService>();
-            ViewComponentTagHelpersServiceCollectionExtensions.AddViewComponentTagHelpers(services);
+            //CR: Read extension methods C#
+            services.AddViewComponentTagHelpers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

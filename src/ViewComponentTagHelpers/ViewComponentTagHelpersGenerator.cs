@@ -9,58 +9,36 @@ using System.Text;
 
 namespace ViewComponentTagHelpers
 {
-    /// <summary>
-    /// Generates a tag helper file for a given view component.
-    /// </summary>
     public class ViewComponentTagHelpersGenerator
     {
-        private string _rootDirectory;
-        private string _templateFile;
-        private string[] _lines;
+        private readonly string[] _lines;
 
-        /// <summary>
-        /// Creates an instance of the ViewComponentTagHelpersGenerator class.
-        /// </summary>
-        /// <param name="rootDirectory"></param>
-        /// <param name="templateFile"></param>
-        public ViewComponentTagHelpersGenerator(string rootDirectory, string templateFile)
+        public ViewComponentTagHelpersGenerator()
         {
-            _rootDirectory = rootDirectory;
-            _templateFile = templateFile;
-
-            _lines = System.IO.File.ReadAllLines(_rootDirectory + _templateFile);
+            // Yes, this is over 120 characters, but hopefully we will someday not need the whole path.
+            var rootDirectory = "C:\\Users\\t-crqian\\Documents\\Visual Studio 2015\\Projects\\ViewComponentTagHelpers\\src\\ViewComponentTagHelpers\\";
+            var templateFile = "ViewComponentTagHelpersTemplate.txt";
+            _lines = System.IO.File.ReadAllLines(rootDirectory + templateFile);
         }
 
-        /// <summary>
-        /// Given a viewComponentDescriptor, returns the C# code of an associated tag helper.
-        /// </summary>
-        /// <param name="viewComponentDescriptor"></param>
-        /// <returns></returns>
         public string WriteTagHelper(ViewComponentDescriptor viewComponentDescriptor)
         {
-            var viewComponentName = viewComponentDescriptor.ShortName;
-            var viewComponentType = viewComponentDescriptor.TypeInfo;
-
+            //Set variables where they're used
             string[] lines = (string[])_lines.Clone();
 
-            //HtmlTargetElement
+            var viewComponentName = viewComponentDescriptor.ShortName;
             string lowerKebab = GetLowerKebab(viewComponentName);
             lines = FindAndReplace(lines, "[[HtmlTargetElement]]", lowerKebab);
 
-            //ViewComponentName
             lines = FindAndReplace(lines, "[[ViewComponentName]]", viewComponentName);
 
-            //CustomParameters, ParametersObject
+            var viewComponentType = viewComponentDescriptor.TypeInfo;
             lines = SetParameters(lines, viewComponentType);
 
             return LinesToString(lines);
         }
         
-        /// <summary>
-        /// Returns the lower kebab case alternative for a camel/pascal case word.
-        /// </summary>
-        /// <param name="word"></param>
-        /// <returns></returns>
+        // CR: figure out razor (not mine);; taghelperdescriptorfactory
         private string GetLowerKebab(string word)
         {
             //TODO: make sure camel/pascal case? Will only ever be referenced internally.
@@ -86,24 +64,21 @@ namespace ViewComponentTagHelpers
             return sb.ToString();
         }
 
-        /// <summary>
-        /// Adds a line declaring a property of each tag helper dependent on arguments of the Invoke() method of the view component.
-        /// </summary>
-        /// <param name="lines"></param>
-        /// <param name="viewComponentType"></param>
-        /// <returns></returns>
         private string[] SetParameters(string[] lines, TypeInfo viewComponentType)
         {
             //Sets global parameters. 
             var getSet = "{ get; set; }";
 
             //Get the invoked method of the view component.
-            var invokableMethod = viewComponentType.GetMethods().Where(info => info.Name.StartsWith("Invoke", StringComparison.Ordinal)).FirstOrDefault();
+            // CR: Call the way the MVC calls this.
+            var invokableMethod = viewComponentType.GetMethods().Where(info => info.Name.Equals("Invoke") || info.Name.Equals("InvokeAsync")).FirstOrDefault();
             if (invokableMethod == null)
             {
+                // TODO: Make this a resource
                 throw new Exception("This view component has no invokable method.");
             }
 
+            // CR: check how MVC does this
             var methodParameters = invokableMethod.GetParameters();
             var methodParameterStrings = new string[methodParameters.Length];
 
@@ -114,11 +89,15 @@ namespace ViewComponentTagHelpers
             {
                 //set the methodParameterStrings
                 var parameter = methodParameters[i];
-                methodParameterStrings[i] = "\tpublic " + parameter.ParameterType.Name + " " + parameter.Name + " " + getSet;
+
+                // CR: use String interpolation (adsf)
+                // CR: combine space and get set
+                methodParameterStrings[i] = "    public " + parameter.ParameterType.Name + " " + parameter.Name + " " + getSet;
 
                 //and add to object
                 sb.Append(parameter.Name);
 
+                //do this separately (the object part)
                 if (i < methodParameters.Length - 1)
                 {
                     sb.Append(",");
@@ -134,11 +113,6 @@ namespace ViewComponentTagHelpers
             return lines;
         }
 
-        /// <summary>
-        ///Converts a string[] into a long string with new lines separating each line.
-        /// </summary>
-        /// <param name="lines"></param>
-        /// <returns></returns>
         private string LinesToString(string[] lines)
         {
             StringBuilder sb = new StringBuilder();
@@ -151,41 +125,29 @@ namespace ViewComponentTagHelpers
             return sb.ToString();
         }
 
-        /// <summary>
-        /// Replaces each instance of before in lines with after.
-        /// </summary>
-        /// <param name="lines"></param>
-        /// <param name="before"></param>
-        /// <param name="after"></param>
-        /// <returns></returns>
         private string[] FindAndReplace(string[] lines, string before, string after)
         {
             for (var i = 0; i < lines.Length; i++)
             {
-                if (lines[i].Contains(before))
-                {
+
                     lines[i] = lines[i].Replace(before, after);
-                }
             }
 
             return lines;
         }
 
-        /// <summary>
-        /// Replace each instance of before in lines with after.
-        /// </summary>
-        /// <param name="lines"></param>
-        /// <param name="before"></param>
-        /// <param name="after"></param>
-        /// <returns></returns>
+
         private string[] FindAndReplace(string[] lines, string before, string[] after)
         {
             var line = FindLine(before);
             if (line == -1)
             {
+                //Use string interpolation
                 throw new Exception(before + " is not found in the template.");
             }
 
+            // CR: Normalize string.format and then gooooooo
+            // CR: CHeck out string.format
             var firstPart = new string[line];
             Array.Copy(lines, 0, firstPart, 0, firstPart.Length);
 
@@ -197,11 +159,7 @@ namespace ViewComponentTagHelpers
             return sumParts;
         }
 
-        /// <summary>
-        /// Finds the line containing the first instance of the keyword, or -1 if none is found.
-        /// </summary>
-        /// <param name="keyword"></param>
-        /// <returns></returns>
+
         private int FindLine(string keyword)
         {
             for (var i = 0; i < _lines.Length; i++)

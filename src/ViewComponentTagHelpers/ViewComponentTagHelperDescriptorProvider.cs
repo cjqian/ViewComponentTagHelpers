@@ -3,6 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using System;
 using System.Collections.Generic;
 
 namespace ViewComponentTagHelpers
@@ -10,28 +11,23 @@ namespace ViewComponentTagHelpers
     public class ViewComponentTagHelperDescriptorProvider
     {
         private readonly IViewComponentDescriptorProvider _viewComponentDescriptorProvider;
-        private ViewComponentTagHelpersGenerator _viewComponentTagHelpersGenerator;
-        private ICompilationService _compilationService;
+        private readonly ViewComponentTagHelpersGenerator _viewComponentTagHelpersGenerator;
+        private readonly InjectRoslynCompilationService _compilationService;
 
         public ViewComponentTagHelperDescriptorProvider (IViewComponentDescriptorProvider viewComponentDescriptorProvider, ICompilationService compilationService)
         {
             _viewComponentDescriptorProvider = viewComponentDescriptorProvider;
-            _compilationService = compilationService;
+            _compilationService = (InjectRoslynCompilationService)compilationService;
 
-            //Location of the ViewCOmponentTagHelpersTemplate; will eventually generate without template.
-            var rootDirectory = "C:\\Users\\t-crqian\\Documents\\Visual Studio 2015\\Projects\\ViewComponentTagHelpers\\src\\ViewComponentTagHelpers\\";
-            var rootFile = "ViewComponentTagHelpersTemplate.txt";
+            // TODO: put all classes together so compile/make references once
+            // TODO: embed or write out individual template
 
-            _viewComponentTagHelpersGenerator = new ViewComponentTagHelpersGenerator(rootDirectory, rootFile);
+            _viewComponentTagHelpersGenerator = new ViewComponentTagHelpersGenerator();
         }
 
-        /// <summary>
-        /// Returns a list of ViewCOmponentTagHelperDescriptors, which include the type of the compilation and the view component descriptor. 
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<ViewComponentTagHelperDescriptor> GetViewComponentTagHelperDescriptors()
+        public IEnumerable<Type> GetTagHelperTypes()
         {
-            List<ViewComponentTagHelperDescriptor> viewComponentTagHelperDescriptors = new List<ViewComponentTagHelperDescriptor>();
+            var tagHelperTypes = new List<Type>();
 
             var viewComponentDescriptors = _viewComponentDescriptorProvider.GetViewComponents();
             foreach (var viewComponentDescriptor in viewComponentDescriptors)
@@ -42,14 +38,12 @@ namespace ViewComponentTagHelpers
                 //Compile the tagHelperFile in memory and add metadata references to the compilation service.
                 var fileInfo = new DummyFileInfo();
                 RelativeFileInfo relativeFileInfo = new RelativeFileInfo(fileInfo,  "./");
-                var compilationResult = ((InjectRoslynCompilationService)_compilationService).AppendCompile(relativeFileInfo, tagHelperFile);
+                var compilationResult = _compilationService.CompileAndAddReference(relativeFileInfo, tagHelperFile);
 
-                //Add a viewcomponenttaghelperdescriptor to our list.
-                var viewComponentTagHelperDescriptor = new ViewComponentTagHelperDescriptor(viewComponentDescriptor, compilationResult.compiledType);
-                viewComponentTagHelperDescriptors.Add(viewComponentTagHelperDescriptor);
+                tagHelperTypes.Add(compilationResult.CompiledType);
             }
 
-            return viewComponentTagHelperDescriptors;
+            return tagHelperTypes;
         }
     }
 }
