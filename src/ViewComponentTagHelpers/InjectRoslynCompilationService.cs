@@ -57,7 +57,7 @@ namespace ViewComponentTagHelpers
 
         public CompilationResult CompileAndAddReference( RelativeFileInfo fileInfo, string compilationContent)
         {
-            //NotNull checking. 
+            // NotNull checking. 
             if (fileInfo == null)
             {
                 throw new ArgumentNullException(nameof(fileInfo));
@@ -68,7 +68,7 @@ namespace ViewComponentTagHelpers
                 throw new ArgumentNullException(nameof(compilationContent));
             }
 
-            //Creates a CSharpCompilation using arguments in preparation of compilation. 
+            //C reates a CSharpCompilation using arguments in preparation of compilation. 
             var assemblyName = Path.GetRandomFileName();
 
             var compilationCallback = _optionsAccessor.Value.CompilationCallback;
@@ -89,15 +89,15 @@ namespace ViewComponentTagHelpers
 
             compilation = Rewrite(compilation);
             
-            //Add metadata references of the new CSharpCompilation compilation to the references.
+            // Add metadata references of the new CSharpCompilation compilation to the references.
             UpdateCompilationReferences(compilation.ToMetadataReference());
 
-            // CR: CompilationContext.COmpilation.ToMetadataReference check out MvcOptions
+            // CR: CompilationContext.Compilation.ToMetadataReference check out MvcOptions
             var compilationContext = new RoslynCompilationContext(compilation);
             compilationCallback(compilationContext);
             compilation = compilationContext.Compilation;
 
-            //Compiles roughly in agreeance to DefaultRoslynCompilationService's Compile() //
+            // Compiles roughly in agreeance to DefaultRoslynCompilationService's Compile() //
             using (var assemblyStream = new MemoryStream())
             {
                 using (var pdbStream = new MemoryStream())

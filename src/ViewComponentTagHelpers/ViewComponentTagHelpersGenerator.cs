@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -36,52 +35,54 @@ namespace ViewComponentTagHelpers
 
         public string WriteTagHelper(ViewComponentDescriptor viewComponentDescriptor)
         {
-            //Set variables where they're used
+            // Set variables where they're used
             var viewComponentName = viewComponentDescriptor.ShortName;
             var lowerKebab = GetLowerKebab(viewComponentName);
+
             var viewComponentType = viewComponentDescriptor.TypeInfo;
-
-
             var methodParameters = GetMethodParameters(viewComponentType);
             var parametersInitialized = GetInitializedParameters(methodParameters);
             var parametersObject = GetObjectParameters(methodParameters);
 
-            string[] formattedParameters = new string[] { lowerKebab, viewComponentName, parametersInitialized, parametersObject };
+            var formattedParameters = new string[] { lowerKebab, viewComponentName,
+                parametersInitialized, parametersObject };
 
             var formattedLines = String.Format(_lines, formattedParameters);
             return formattedLines;
         }
 
-        //Razor's TagHelperDescriptorFactory does this in a private ToIndexerAttributeDescriptor method. Should we copy?
+        // Razor's TagHelperDescriptorFactory does this in a private ToIndexerAttributeDescriptor method. Copy?
         private string GetLowerKebab(string word)
         {
-            //TODO: Check numbers, symbols, etc. See above comment.
+            // TODO: Check numbers, symbols, etc. See above comment.
             if (word.Length == 0) return "";
 
-            StringBuilder sb = new StringBuilder();
-            char[] wordArray = word.ToCharArray();
+            var stringBuilder = new StringBuilder();
+            var wordArray = word.ToCharArray();
 
             // If capitalized and not the first character, will replace with dash and lower case.
-            sb.Append(Char.ToLower(wordArray[0]));
-            for (int i = 1; i < wordArray.Length; i++)
+            stringBuilder.Append(Char.ToLower(wordArray[0]));
+            for (var i = 1; i < wordArray.Length; i++)
             {
-                char cur = wordArray[i];
-                if (Char.IsUpper(cur))
+                var character = wordArray[i];
+                if (Char.IsUpper(character))
                 {
-                    sb.Append("-" + Char.ToLower(cur));
+                    stringBuilder.Append("-" + Char.ToLower(character));
                 } else
                 {
-                    sb.Append(cur);
+                    stringBuilder.Append(character);
                 }
             }
 
-            return sb.ToString();
+            return stringBuilder.ToString();
         }
         
         private ParameterInfo[] GetMethodParameters(TypeInfo viewComponentType)
         {
-            //CR: Call the way MVC calls this.
-            var invokableMethod = viewComponentType.GetMethods().Where(info => info.Name.Equals("Invoke") || info.Name.Equals("InvokeAsync")).FirstOrDefault();
+            // CR: Call the way MVC calls this.
+            var invokableMethod = viewComponentType.GetMethods().Where(
+                info => info.Name.Equals("Invoke") 
+                || info.Name.Equals("InvokeAsync")).FirstOrDefault();
             if (invokableMethod == null)
             {
                 // TODO: Make this a resource
@@ -97,14 +98,11 @@ namespace ViewComponentTagHelpers
             var getSet = " {get; set; }";
            
             var methodParameterStrings = new string[methodParameters.Length];
-
-            //Each parameter gets a new declaration.
+            // Each parameter gets a new declaration.
             for (var i = 0; i < methodParameters.Length; i++)
             {
-                //set the methodParameterStrings
                 var parameter = methodParameters[i];
-
-                methodParameterStrings[i] = "    public " + parameter.ParameterType.Name + " " + parameter.Name + getSet;
+                methodParameterStrings[i] = "public " + parameter.ParameterType.Name + " " + parameter.Name + getSet;
             }
 
             return LinesToString(methodParameterStrings);
@@ -113,39 +111,33 @@ namespace ViewComponentTagHelpers
         private string GetObjectParameters(ParameterInfo[] methodParameters)
         {
             var methodParameterStrings = new string[methodParameters.Length];
+            var stringBuilder = new StringBuilder();
 
-            StringBuilder sb = new StringBuilder();
-
-            //Each parameter gets a new declaration.
+            // Each parameter gets a new declaration.
             for (var i = 0; i < methodParameters.Length; i++)
             {
-                //set the methodParameterStrings
-                var parameter = methodParameters[i];
+                stringBuilder.Append(methodParameters[i].Name);
 
-                //and add to object
-                sb.Append(parameter.Name);
-
-                //do this separately (the object part)
                 if (i < methodParameters.Length - 1)
                 {
-                    sb.Append(",");
+                    stringBuilder.Append(",");
                 }
             }
 
-            return sb.ToString();
+            return stringBuilder.ToString();
         }
 
-        //String.Concat does not add \n after each line.
+        // String.Concat does not add \n after each line.
         private string LinesToString(string[] lines)
         {
-            StringBuilder sb = new StringBuilder();
+            var stringBuilder = new StringBuilder();
 
-            foreach (string line in lines)
+            foreach (var line in lines)
             {
-                sb.AppendLine(line);
+                stringBuilder.AppendLine(line);
             }
 
-            return sb.ToString();
+            return stringBuilder.ToString();
         }
     }
 }
