@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.Razor.Directives;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Microsoft.AspNetCore.Razor.Compilation.TagHelpers;
 using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 
 namespace ViewComponentTagHelpers
@@ -13,14 +14,15 @@ namespace ViewComponentTagHelpers
     {
         public ViewComponentMvcRazorHost(
             IChunkTreeCache chunkTreeCache,
+            ITagHelperDescriptorResolver tagHelperDescriptorResolver,
             IViewComponentDescriptorProvider viewComponentDescriptorProvider,
             ICompilationService compilationService)
             : base(chunkTreeCache, new ViewComponentTagHelpersDescriptorResolver(new TagHelperTypeResolver(), 
-                viewComponentDescriptorProvider, compilationService))
+                tagHelperDescriptorResolver, viewComponentDescriptorProvider, compilationService))
         {
-            // CR: Wrap existing resolver instaed of create new.
             TagHelperDescriptorResolver = new ViewComponentTagHelpersDescriptorResolver(
                 new TagHelperTypeResolver(),
+                tagHelperDescriptorResolver,
                 viewComponentDescriptorProvider,
                 compilationService);
         }

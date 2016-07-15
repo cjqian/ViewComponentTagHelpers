@@ -14,10 +14,8 @@ namespace ViewComponentTagHelpers.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            //TODO issue this is in the web part!! 
-            //CR: Add to services elsewhere
-            services.AddSingleton<ICompilationService, InjectRoslynCompilationService>();
-            //CR: Read extension methods C#
+
+            // CR: Read extension methods C#
             services.AddViewComponentTagHelpers();
         }
 

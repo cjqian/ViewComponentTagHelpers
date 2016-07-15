@@ -35,12 +35,9 @@ namespace ViewComponentTagHelpers
 
         public string WriteTagHelper(ViewComponentDescriptor viewComponentDescriptor)
         {
-            // Set variables where they're used
             var viewComponentName = viewComponentDescriptor.ShortName;
             var lowerKebab = GetLowerKebab(viewComponentName);
-
-            var viewComponentType = viewComponentDescriptor.TypeInfo;
-            var methodParameters = GetMethodParameters(viewComponentType);
+            var methodParameters = viewComponentDescriptor.MethodInfo.GetParameters();
             var parametersInitialized = GetInitializedParameters(methodParameters);
             var parametersObject = GetObjectParameters(methodParameters);
 
@@ -51,10 +48,10 @@ namespace ViewComponentTagHelpers
             return formattedLines;
         }
 
-        // Razor's TagHelperDescriptorFactory does this in a private ToIndexerAttributeDescriptor method. Copy?
+        // TagHelperDescriptorFactory returns this lower-kebab attribute as a full tag name.
+        // However, this is called after the file is returned.
         private string GetLowerKebab(string word)
         {
-            // TODO: Check numbers, symbols, etc. See above comment.
             if (word.Length == 0) return "";
 
             var stringBuilder = new StringBuilder();
@@ -77,27 +74,13 @@ namespace ViewComponentTagHelpers
             return stringBuilder.ToString();
         }
         
-        private ParameterInfo[] GetMethodParameters(TypeInfo viewComponentType)
-        {
-            // CR: Call the way MVC calls this.
-            var invokableMethod = viewComponentType.GetMethods().Where(
-                info => info.Name.Equals("Invoke") 
-                || info.Name.Equals("InvokeAsync")).FirstOrDefault();
-            if (invokableMethod == null)
-            {
-                // TODO: Make this a resource
-                throw new Exception("This view component has no invokable method.");
-            }
-
-            var methodParameters = invokableMethod.GetParameters();
-            return methodParameters;
-        }
-
+        // Returns "public foo {get; set:} \n public bar {get; set;} \n", etc.
         private string GetInitializedParameters(ParameterInfo[] methodParameters)
         {
             var getSet = " {get; set; }";
            
             var methodParameterStrings = new string[methodParameters.Length];
+
             // Each parameter gets a new declaration.
             for (var i = 0; i < methodParameters.Length; i++)
             {
@@ -108,12 +91,12 @@ namespace ViewComponentTagHelpers
             return LinesToString(methodParameterStrings);
         }
 
+        // Returns "foo, bar", etc.
         private string GetObjectParameters(ParameterInfo[] methodParameters)
         {
             var methodParameterStrings = new string[methodParameters.Length];
             var stringBuilder = new StringBuilder();
 
-            // Each parameter gets a new declaration.
             for (var i = 0; i < methodParameters.Length; i++)
             {
                 stringBuilder.Append(methodParameters[i].Name);

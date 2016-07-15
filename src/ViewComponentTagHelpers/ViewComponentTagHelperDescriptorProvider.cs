@@ -19,7 +19,7 @@ namespace ViewComponentTagHelpers
             ICompilationService compilationService )
         {
             _viewComponentDescriptorProvider = viewComponentDescriptorProvider;
-            _compilationService = (InjectRoslynCompilationService)compilationService;
+            _compilationService = (InjectRoslynCompilationService) compilationService;
 
             // TODO: put all classes together so compile/make references once?
             // TODO: embed or write out individual template

@@ -13,28 +13,29 @@ using System.Reflection;
 
 namespace ViewComponentTagHelpers
 {
-    public class ViewComponentTagHelpersDescriptorResolver : TagHelperDescriptorResolver, ITagHelperDescriptorResolver
+    public class ViewComponentTagHelpersDescriptorResolver : ITagHelperDescriptorResolver
     {
         private readonly ViewComponentTagHelperDescriptorProvider _viewComponentTagHelperDescriptorProvider;
         private readonly ICompilationService _compilationService;
         private IEnumerable<TagHelperDescriptor> _viewComponentTagHelpersDescriptors;
+        private ITagHelperDescriptorResolver _tagHelperDescriptorResolver;
 
         public ViewComponentTagHelpersDescriptorResolver(
             TagHelperTypeResolver typeResolver,
+            ITagHelperDescriptorResolver descriptorResolver,
             IViewComponentDescriptorProvider viewComponentDescriptorProvider,
             ICompilationService compilationService)
-            :base( false )
         {
-            // CR: No inherit from tagtyperesovler?? 
+            _compilationService = compilationService;
+            _tagHelperDescriptorResolver = descriptorResolver;
             _viewComponentTagHelperDescriptorProvider = new ViewComponentTagHelperDescriptorProvider(
                 viewComponentDescriptorProvider, compilationService );
-            _compilationService = compilationService;
         }
 
         IEnumerable<TagHelperDescriptor> ITagHelperDescriptorResolver.Resolve(
             TagHelperDescriptorResolutionContext resolutionContext )
         {
-            var descriptors = base.Resolve(resolutionContext);
+            var descriptors = _tagHelperDescriptorResolver.Resolve(resolutionContext);
             if (_viewComponentTagHelpersDescriptors == null)
             {
                 _viewComponentTagHelpersDescriptors = ResolveViewComponentTagHelpersDescriptors(
@@ -51,7 +52,6 @@ namespace ViewComponentTagHelpers
 
             // Use the tagHelperDescriptorFactory to create descriptors for each viewComponentTagHelperDescriptor.
             var tagHelperDescriptorFactory = new TagHelperDescriptorFactory(false);
-
             var tagHelperTypes = _viewComponentTagHelperDescriptorProvider.GetTagHelperTypes();
             foreach (var tagHelperType in tagHelperTypes)
             {

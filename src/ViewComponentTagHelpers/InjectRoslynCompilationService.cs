@@ -68,11 +68,9 @@ namespace ViewComponentTagHelpers
                 throw new ArgumentNullException(nameof(compilationContent));
             }
 
-            //C reates a CSharpCompilation using arguments in preparation of compilation. 
-            var assemblyName = Path.GetRandomFileName();
 
-            var compilationCallback = _optionsAccessor.Value.CompilationCallback;
-            var compilationOptions = _optionsAccessor.Value.CompilationOptions;
+            // Creates a CSharpCompilation using arguments in preparation of compilation. 
+            var assemblyName = Path.GetRandomFileName();
             var parseOptions = _optionsAccessor.Value.ParseOptions;
 
             var sourceText = SourceText.From(compilationContent, Encoding.UTF8);
@@ -81,6 +79,8 @@ namespace ViewComponentTagHelpers
                 path: assemblyName,
                 options: parseOptions);
 
+
+            var compilationOptions = _optionsAccessor.Value.CompilationOptions;
             var compilation = CSharpCompilation.Create(
                 assemblyName,
                 options: compilationOptions,
@@ -94,6 +94,8 @@ namespace ViewComponentTagHelpers
 
             // CR: CompilationContext.Compilation.ToMetadataReference check out MvcOptions
             var compilationContext = new RoslynCompilationContext(compilation);
+
+            var compilationCallback = _optionsAccessor.Value.CompilationCallback;
             compilationCallback(compilationContext);
             compilation = compilationContext.Compilation;
 
