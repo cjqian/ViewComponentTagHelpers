@@ -11,12 +11,14 @@ using System.ComponentModel;
 
 namespace ViewComponentTagHelpers
 {
-    [HtmlTargetElement("vc:[[HtmlTargetElement]]")]
-    public class [[ViewComponentName]]ViewComponentTagHelpers: TagHelper
+	//HtmlTargetElement = 0
+    [HtmlTargetElement("vc:[[0]]")]
+	//ViewComponentName = 1 
+    public class [[1]]ViewComponentTagHelpers: TagHelper
     {
         private readonly IViewComponentHelper _viewComponentHelper;
 
-        public [[ViewComponentName]]ViewComponentTagHelpers(IViewComponentHelper viewComponentHelper)
+        public [[1]]ViewComponentTagHelpers(IViewComponentHelper viewComponentHelper)
         {
             _viewComponentHelper = viewComponentHelper;
         }
@@ -24,12 +26,14 @@ namespace ViewComponentTagHelpers
         [ViewContext]
         public ViewContext ViewContext { get; set; }
 
-        [[CustomParameters]]
+		//CustomParameters = 2
+        [[2]]
 
         public override async void Process(TagHelperContext context, TagHelperOutput output)
         {
             ((DefaultViewComponentHelper)_viewComponentHelper).Contextualize(ViewContext);
-            var viewContent = await _viewComponentHelper.InvokeAsync("[[ViewComponentName]]", new {[[ParametersObject]]});
+			//ParametersObject = 3
+            var viewContent = await _viewComponentHelper.InvokeAsync("[[1]]", new {[[3]]});
 			output.TagName = "";
             output.Content.SetHtmlContent(viewContent);
         }

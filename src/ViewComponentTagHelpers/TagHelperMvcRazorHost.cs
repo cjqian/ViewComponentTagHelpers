@@ -12,9 +12,9 @@ namespace ViewComponentTagHelpers
     /// <summary>
     /// An instance of MvcRazorHost. We take in the compilation service as well to force compilation of generated tag helper code.
     /// </summary>
-    public class TagHelperMvcRazorHost : MvcRazorHost
+    public class ViewComponentMvcRazorHost : MvcRazorHost
     {
-        public TagHelperMvcRazorHost(
+        public ViewComponentMvcRazorHost(
             IChunkTreeCache chunkTreeCache,
             IViewComponentDescriptorProvider viewComponentDescriptorProvider,
             ICompilationService compilationService)
@@ -28,5 +28,4 @@ namespace ViewComponentTagHelpers
                 compilationService);
         }
     }
- //CR: ViewCOmponentMvcRazorHost?
 }

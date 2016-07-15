@@ -10,7 +10,7 @@ namespace ViewComponentTagHelpers
     {
         public static IServiceCollection AddViewComponentTagHelpers(this IServiceCollection services)
         {
-            services.AddTransient<IMvcRazorHost, TagHelperMvcRazorHost>();
+            services.AddTransient<IMvcRazorHost, ViewComponentMvcRazorHost>();
 
             return services;
         }
