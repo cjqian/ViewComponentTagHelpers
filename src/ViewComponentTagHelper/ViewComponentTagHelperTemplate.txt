@@ -1,20 +1,20 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Reflection;
+using System.ComponentModel;
+
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-using System.Threading.Tasks;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.ComponentModel;
 
 namespace ViewComponentTagHelper
 {
 	// HtmlTargetElement = 0
     [HtmlTargetElement("vc:[[0]]")]
 	// ViewComponentName = 1 
-	// Change to singular. CR:
     public class [[1]]ViewComponentTagHelper: TagHelper
     {
         private readonly IViewComponentHelper _viewComponentHelper;
@@ -32,12 +32,9 @@ namespace ViewComponentTagHelper
 
         public override async void Process(TagHelperContext context, TagHelperOutput output)
         {
-		// CR: Casting to IViewContexualizable (check)
-            ((DefaultViewComponentHelper)_viewComponentHelper).Contextualize(ViewContext);
+            ((IViewContextAware)_viewComponentHelper).Contextualize(ViewContext);
 			// ParametersObject = 3
             var viewContent = await _viewComponentHelper.InvokeAsync("[[1]]", new {[[3]]});
-			//Tag name should be null. CR:
-			output.TagName = "";
             output.Content.SetHtmlContent(viewContent);
         }
 		

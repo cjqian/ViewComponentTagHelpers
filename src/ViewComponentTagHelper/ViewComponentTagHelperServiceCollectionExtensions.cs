@@ -3,6 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
+using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ViewComponentTagHelper
@@ -13,6 +14,7 @@ namespace ViewComponentTagHelper
         {
             services.AddTransient<IMvcRazorHost, ViewComponentMvcRazorHost>();
             services.AddSingleton<ICompilationService, InjectRoslynCompilationService>();
+            //services.AddSingleton<ITagHelperTypeResolver, ViewComponentTagHelperTypeResolver>();
             return services;
         }
     }

@@ -15,7 +15,7 @@ namespace ViewComponentTagHelper
 {
     public class ViewComponentTagHelperDescriptorResolver : ITagHelperDescriptorResolver
     {
-        private readonly ViewComponentTagHelperTypeProvider _viewComponentTagHelperDescriptorProvider;
+        private readonly ViewComponentTagHelperTypeProvider _viewComponentTagHelperTypeProvider;
         private readonly ICompilationService _compilationService;
         private IEnumerable<TagHelperDescriptor> _ViewComponentTagHelperDescriptors;
         private ITagHelperDescriptorResolver _tagHelperDescriptorResolver;
@@ -28,7 +28,7 @@ namespace ViewComponentTagHelper
         {
             _compilationService = compilationService;
             _tagHelperDescriptorResolver = descriptorResolver;
-            _viewComponentTagHelperDescriptorProvider = new ViewComponentTagHelperTypeProvider(
+            _viewComponentTagHelperTypeProvider = new ViewComponentTagHelperTypeProvider(
                 viewComponentDescriptorProvider,
                 compilationService);
         }
@@ -53,8 +53,7 @@ namespace ViewComponentTagHelper
             // Use the tagHelperDescriptorFactory to create descriptors for each viewComponentTagHelperDescriptor.
             var tagHelperDescriptorFactory = new TagHelperDescriptorFactory(false);
 
-            // CR: Change names.
-            var tagHelperTypes = _viewComponentTagHelperDescriptorProvider.GetTagHelperTypes();
+            var tagHelperTypes = _viewComponentTagHelperTypeProvider.GetTagHelperTypes();
             foreach (var tagHelperType in tagHelperTypes)
             {
                 var assemblyName = tagHelperType.GetTypeInfo().Assembly.GetName().Name;

@@ -14,8 +14,6 @@ namespace ViewComponentTagHelper.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-
-            // CR: Read extension methods C#
             services.AddViewComponentTagHelper();
         }
 
