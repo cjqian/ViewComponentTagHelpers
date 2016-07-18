@@ -1,11 +1,10 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using Microsoft.AspNetCore.Mvc.ViewComponents;
 using System;
-using System.Linq;
 using System.Reflection;
 using System.Text;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 
 namespace ViewComponentTagHelper
 {
@@ -28,7 +27,7 @@ namespace ViewComponentTagHelper
                 lines[i] = lines[i].Replace("{", "{{");
                 lines[i] = lines[i].Replace("}", "}}");
                 lines[i] = lines[i].Replace("[[", "{");
-                lines[i] = lines[i].Replace("]]", "}"); 
+                lines[i] = lines[i].Replace("]]", "}");
             }
             return LinesToString(lines);
         }
@@ -65,7 +64,8 @@ namespace ViewComponentTagHelper
                 if (Char.IsUpper(character))
                 {
                     stringBuilder.Append("-" + Char.ToLower(character));
-                } else
+                }
+                else
                 {
                     stringBuilder.Append(character);
                 }
@@ -73,12 +73,12 @@ namespace ViewComponentTagHelper
 
             return stringBuilder.ToString();
         }
-        
+
         // Returns "public foo {get; set:} \n public bar {get; set;} \n", etc.
         private string GetInitializedParameters(ParameterInfo[] methodParameters)
         {
             var getSet = " {get; set; }";
-           
+
             var methodParameterStrings = new string[methodParameters.Length];
 
             // Each parameter gets a new declaration.

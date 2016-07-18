@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.Razor.Directives;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.Razor.Compilation.TagHelpers;
-using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 
 namespace ViewComponentTagHelper
 {

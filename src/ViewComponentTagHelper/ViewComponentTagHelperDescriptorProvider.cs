@@ -1,10 +1,10 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using Microsoft.AspNetCore.Mvc.Razor.Compilation;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
 using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc.Razor.Compilation;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 
 namespace ViewComponentTagHelper
 {
@@ -14,12 +14,12 @@ namespace ViewComponentTagHelper
         private readonly ViewComponentTagHelperGenerator _ViewComponentTagHelperGenerator;
         private readonly InjectRoslynCompilationService _compilationService;
 
-        public ViewComponentTagHelperTypeProvider (
-            IViewComponentDescriptorProvider viewComponentDescriptorProvider, 
-            ICompilationService compilationService )
+        public ViewComponentTagHelperTypeProvider(
+            IViewComponentDescriptorProvider viewComponentDescriptorProvider,
+            ICompilationService compilationService)
         {
             _viewComponentDescriptorProvider = viewComponentDescriptorProvider;
-            _compilationService = (InjectRoslynCompilationService) compilationService;
+            _compilationService = (InjectRoslynCompilationService)compilationService;
 
             // TODO: put all classes together so compile/make references once?
             // TODO: embed or write out individual template
@@ -36,7 +36,7 @@ namespace ViewComponentTagHelper
             {
                 // Compile the tagHelperFile in memory and add metadata references to the compilation service.
                 var fileInfo = new DummyFileInfo();
-                var relativeFileInfo = new RelativeFileInfo(fileInfo,  "./");
+                var relativeFileInfo = new RelativeFileInfo(fileInfo, "./");
 
                 // Generates a tagHelperFile (string .cs tag helper equivalent of the tag helper.)
                 var tagHelperFile = _ViewComponentTagHelperGenerator.WriteTagHelper(viewComponentDescriptor);
