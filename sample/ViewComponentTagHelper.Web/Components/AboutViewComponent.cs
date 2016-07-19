@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 //namespace ViewComponentTagHelper.Web.Components
-namespace ViewComponentTagHelper
+namespace ViewComponentTagHelper.Web
 {
     public class AboutViewComponent : ViewComponent
     {

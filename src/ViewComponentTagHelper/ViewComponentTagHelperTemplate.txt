@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Reflection;
-using System.ComponentModel;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
@@ -29,19 +25,14 @@ namespace ViewComponentTagHelper
 
 		// CustomParameters = 2
         [[2]]
-
-        public override async void Process(TagHelperContext context, TagHelperOutput output)
-        {
-            ((IViewContextAware)_viewComponentHelper).Contextualize(ViewContext);
-			// ParametersObject = 3
-            var viewContent = await _viewComponentHelper.InvokeAsync("[[1]]", new {[[3]]});
-            output.Content.SetHtmlContent(viewContent);
-        }
 		
 		//Override process async, move logic to here. CR:
-        public virtual async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
+        public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
-            Process(context, output);
+			((IViewContextAware)_viewComponentHelper).Contextualize(ViewContext);
+			// ParametersObject = 3
+            var viewContent = await _viewComponentHelper.InvokeAsync("[[1]]", new {[[3]]});	
+			output.Content.SetHtmlContent(viewContent);
         }
     }
 }

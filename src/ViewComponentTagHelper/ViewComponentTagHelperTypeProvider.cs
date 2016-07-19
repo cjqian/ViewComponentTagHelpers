@@ -13,7 +13,7 @@ namespace ViewComponentTagHelper
     {
         private readonly IViewComponentDescriptorProvider _viewComponentDescriptorProvider;
         private readonly ViewComponentTagHelperGenerator _ViewComponentTagHelperGenerator;
-        private readonly InjectRoslynCompilationService _compilationService;
+        private readonly DynamicRosylnCompilationService _compilationService;
         private readonly Dictionary<string, Type> _compiledTagHelperCache;
 
         public ViewComponentTagHelperTypeProvider(
@@ -21,7 +21,7 @@ namespace ViewComponentTagHelper
             ICompilationService compilationService)
         {
             _viewComponentDescriptorProvider = viewComponentDescriptorProvider;
-            _compilationService = (InjectRoslynCompilationService)compilationService;
+            _compilationService = (DynamicRosylnCompilationService)compilationService;
             _compiledTagHelperCache = new Dictionary<string, Type>();
             // TODO: put all classes together so compile/make references once?
             // TODO: embed or write out individual template

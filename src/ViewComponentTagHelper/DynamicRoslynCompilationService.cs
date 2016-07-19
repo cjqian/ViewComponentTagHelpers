@@ -21,7 +21,7 @@ using Microsoft.Extensions.Options;
 
 namespace ViewComponentTagHelper
 {
-    public class InjectRoslynCompilationService : DefaultRoslynCompilationService, ICompilationService
+    public class DynamicRosylnCompilationService : DefaultRoslynCompilationService, ICompilationService
     {
         private IList<MetadataReference> _compilationReferences;
         private bool _compilationReferencesInitialized;
@@ -36,7 +36,7 @@ namespace ViewComponentTagHelper
 #endif
         private readonly IOptions<RazorViewEngineOptions> _optionsAccessor;
 
-        public InjectRoslynCompilationService(
+        public DynamicRosylnCompilationService(
             ApplicationPartManager partManager, 
             IOptions<RazorViewEngineOptions> optionsAccessor, 
             IRazorViewEngineFileProviderAccessor fileProviderAccessor, 
@@ -67,7 +67,6 @@ namespace ViewComponentTagHelper
 
         public CompilationResult CompileAndAddReference(RelativeFileInfo fileInfo, string compilationContent)
         {
-            // NotNull checking. 
             if (fileInfo == null)
             {
                 throw new ArgumentNullException(nameof(fileInfo));
@@ -104,7 +103,6 @@ namespace ViewComponentTagHelper
             // Add metadata references of the new CSharpCompilation compilation to the references.
             UpdateCompilationReferences(compilation.ToMetadataReference());
 
-            // CR: CompilationContext.Compilation.ToMetadataReference check out MvcOptions
             var compilationContext = new RoslynCompilationContext(compilation);
 
             var compilationCallback = _optionsAccessor.Value.CompilationCallback;

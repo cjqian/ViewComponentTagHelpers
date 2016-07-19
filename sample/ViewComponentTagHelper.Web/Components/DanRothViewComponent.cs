@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ViewComponentTagHelper
+namespace ViewComponentTagHelper.Web
 {
     public class DanRothViewComponent : ViewComponent
     {

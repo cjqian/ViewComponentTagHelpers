@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
-using Microsoft.AspNetCore.Mvc.Razor.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.AspNetCore.Razor;
 using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 
 namespace ViewComponentTagHelper
@@ -20,7 +16,7 @@ namespace ViewComponentTagHelper
         public ViewComponentTagHelperTypeResolver(
             IViewComponentDescriptorProvider viewComponentDescriptorProvider,
             ICompilationService compilationService
-            ) : base ()
+            ) : base()
         {
             _compilationService = compilationService;
             _viewComponentTagHelperTypeProvider = new ViewComponentTagHelperTypeProvider(
@@ -28,9 +24,8 @@ namespace ViewComponentTagHelper
                 compilationService);
         }
 
-        protected override IEnumerable<TypeInfo> GetExportedTypes(AssemblyName assemblyName) 
+        protected override IEnumerable<TypeInfo> GetExportedTypes(AssemblyName assemblyName)
         {
-            // BREAKPOINT: verify assemblyName
             if (assemblyName == null)
             {
                 throw new ArgumentNullException(nameof(assemblyName));
@@ -43,7 +38,7 @@ namespace ViewComponentTagHelper
             {
                 foreach (var tagHelperType in tagHelperTypeWrappers.Types)
                 {
-                    if (tagHelperType.Namespace.Equals(assemblyName.Name) 
+                    if (tagHelperType.Namespace.Equals(assemblyName.Name)
                         && !ContainsType(results, tagHelperType.Name)
                        )
                     {
@@ -54,7 +49,6 @@ namespace ViewComponentTagHelper
 
             results = results.Concat(base.GetExportedTypes(assemblyName));
             return results;
-
         }
 
         private bool ContainsType(IEnumerable<TypeInfo> types, string typeName)
@@ -69,12 +63,5 @@ namespace ViewComponentTagHelper
 
             return false;
         }
-
-        private bool AssembliesEqual(AssemblyName x, AssemblyName y)
-        {
-            // Ignore case because that's what Assembly.Load does.
-            return string.Equals(x.Name, y.Name, StringComparison.OrdinalIgnoreCase) &&
-                string.Equals(x.CultureName ?? string.Empty, y.CultureName ?? string.Empty, StringComparison.Ordinal);
-        } 
     }
 }

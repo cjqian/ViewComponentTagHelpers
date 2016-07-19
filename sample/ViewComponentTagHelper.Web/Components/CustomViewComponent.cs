@@ -2,7 +2,7 @@
 using System.Reflection;
 
 //This is a normal view component invocation.
-namespace ViewComponentTagHelper
+namespace ViewComponentTagHelper.Web
 {
     public class CustomViewComponent : ViewComponent
     {
