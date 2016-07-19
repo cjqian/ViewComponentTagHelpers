@@ -14,7 +14,9 @@ namespace ViewComponentTagHelper
         private readonly IViewComponentDescriptorProvider _viewComponentDescriptorProvider;
         private readonly ViewComponentTagHelperGenerator _ViewComponentTagHelperGenerator;
         private readonly DynamicRosylnCompilationService _compilationService;
-        private readonly Dictionary<string, Type> _compiledTagHelperCache;
+
+        private readonly Dictionary<string, Type> _compiledTagHelperTypesByName;
+        private readonly Dictionary<string, List<TypeInfo>> _compiledTagHelperTypesByAssembly;
 
         public ViewComponentTagHelperTypeProvider(
             IViewComponentDescriptorProvider viewComponentDescriptorProvider,
@@ -22,48 +24,62 @@ namespace ViewComponentTagHelper
         {
             _viewComponentDescriptorProvider = viewComponentDescriptorProvider;
             _compilationService = (DynamicRosylnCompilationService)compilationService;
-            _compiledTagHelperCache = new Dictionary<string, Type>();
+
+            _compiledTagHelperTypesByName = new Dictionary<string, Type>();
+            _compiledTagHelperTypesByAssembly = new Dictionary<string, List<TypeInfo>>();
+
             // TODO: put all classes together so compile/make references once?
             // TODO: embed or write out individual template
 
             _ViewComponentTagHelperGenerator = new ViewComponentTagHelperGenerator();
         }
 
-        public ViewComponentTagHelperTypeWrapper GetTagHelperTypeWrappers()
+        public IList<TypeInfo> GetTagHelperTypes(AssemblyName assembly)
         {
             UpdateTagHelperTypes();
 
-            var namespaceList = new List<String>();
-
-            foreach (var type in _compiledTagHelperCache.Values)
+            List<TypeInfo> typeList;
+            if (_compiledTagHelperTypesByAssembly.TryGetValue(assembly.Name, out typeList))
             {
-                if (!namespaceList.Contains(type.Namespace))
-                {
-                    namespaceList.Add(type.Namespace);
-                }
-            }
+                return typeList;
+            };
 
-            var viewComponentTagHelperTypeWrapper = new ViewComponentTagHelperTypeWrapper(_compiledTagHelperCache.Values, namespaceList);
-            return viewComponentTagHelperTypeWrapper;
+            return null;
         }
-        
+
+        // Creates a tag helper for each view component and caches. 
         private void UpdateTagHelperTypes()
         {
             var viewComponentDescriptors = _viewComponentDescriptorProvider.GetViewComponents();
             foreach (var viewComponentDescriptor in viewComponentDescriptors)
             {
-                if (!_compiledTagHelperCache.ContainsKey(viewComponentDescriptor.ShortName))
+                if (!_compiledTagHelperTypesByName.ContainsKey(viewComponentDescriptor.ShortName))
                 {
-                // Compile the tagHelperFile in memory and add metadata references to the compilation service.
-                var fileInfo = new DummyFileInfo();
-                var relativeFileInfo = new RelativeFileInfo(fileInfo, "./");
+                    var fileInfo = new DummyFileInfo();
+                    var relativeFileInfo = new RelativeFileInfo(fileInfo, "./");
 
-                // Generates a tagHelperFile (string .cs tag helper equivalent of the tag helper.)
-                var tagHelperFile = _ViewComponentTagHelperGenerator.WriteTagHelper(viewComponentDescriptor);
+                    // Generates a tagHelperFile (string .cs tag helper equivalent of the tag helper.)
+                    var tagHelperFile = _ViewComponentTagHelperGenerator.WriteTagHelper(viewComponentDescriptor);
+                    var compilationResult = _compilationService.AddReferenceAndCompile(relativeFileInfo, tagHelperFile);
 
-                var compilationResult = _compilationService.AddReferenceAndCompile(relativeFileInfo, tagHelperFile);
-                    _compiledTagHelperCache[viewComponentDescriptor.ShortName] = compilationResult.CompiledType;
+                    // Cache. 
+                    var type = compilationResult.CompiledType;
+
+                    _compiledTagHelperTypesByName[viewComponentDescriptor.ShortName] = type;
+
+                    // If this is a new namespace, we create a new list.
+                    // We add the type to its associated assemblies.
+
+                    List<TypeInfo> typeList;
+                    if (!_compiledTagHelperTypesByAssembly.TryGetValue(type.Namespace, out typeList))
+                    {
+                        typeList = new List<TypeInfo>();
+                        _compiledTagHelperTypesByAssembly[type.Namespace] = typeList;
+                    }
+
+                    typeList.Add(type.GetTypeInfo());
                 }
+
             }
         }
     }

@@ -15,9 +15,11 @@ using Microsoft.Extensions.Options;
 namespace ViewComponentTagHelper
 {
 
+    // This factory creates compilations from files.
+    // Also, it keeps a cache of all compilation references.
     public class DynamicRoslynCompilationServiceFactory
     {
-
+       
         private List<MetadataReference> _referenceCache;
         private IOptions<RazorViewEngineOptions> _optionsAccessor;
 

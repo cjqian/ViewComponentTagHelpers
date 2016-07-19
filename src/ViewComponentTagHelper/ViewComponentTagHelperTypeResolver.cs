@@ -31,23 +31,17 @@ namespace ViewComponentTagHelper
                 throw new ArgumentNullException(nameof(assemblyName));
             }
 
-            IEnumerable<TypeInfo> results = new List<TypeInfo>();
+            IEnumerable<TypeInfo> results = base.GetExportedTypes(assemblyName);
 
-            var tagHelperTypeWrappers = _viewComponentTagHelperTypeProvider.GetTagHelperTypeWrappers();
-            if (tagHelperTypeWrappers.Namespaces.Contains(assemblyName.Name))
+            var tagHelperTypes = _viewComponentTagHelperTypeProvider.GetTagHelperTypes(assemblyName);
+            if (tagHelperTypes != null)
             {
-                foreach (var tagHelperType in tagHelperTypeWrappers.Types)
+                foreach (var tagHelperType in tagHelperTypes)
                 {
-                    if (tagHelperType.Namespace.Equals(assemblyName.Name)
-                        && !ContainsType(results, tagHelperType.Name)
-                       )
-                    {
-                        results = results.Append(tagHelperType.GetTypeInfo());
-                    }
+                        results = results.Append(tagHelperType);
                 }
             }
 
-            results = results.Concat(base.GetExportedTypes(assemblyName));
             return results;
         }
 
