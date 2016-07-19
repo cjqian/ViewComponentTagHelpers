@@ -61,7 +61,7 @@ namespace ViewComponentTagHelper
                 // Generates a tagHelperFile (string .cs tag helper equivalent of the tag helper.)
                 var tagHelperFile = _ViewComponentTagHelperGenerator.WriteTagHelper(viewComponentDescriptor);
 
-                var compilationResult = _compilationService.CompileAndAddReference(relativeFileInfo, tagHelperFile);
+                var compilationResult = _compilationService.AddReferenceAndCompile(relativeFileInfo, tagHelperFile);
                     _compiledTagHelperCache[viewComponentDescriptor.ShortName] = compilationResult.CompiledType;
                 }
             }

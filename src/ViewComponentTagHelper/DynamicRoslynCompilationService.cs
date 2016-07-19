@@ -6,16 +6,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.Razor.Internal;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
-using Microsoft.CodeAnalysis.Text;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -23,9 +19,6 @@ namespace ViewComponentTagHelper
 {
     public class DynamicRosylnCompilationService : DefaultRoslynCompilationService, ICompilationService
     {
-        private IList<MetadataReference> _compilationReferences;
-        private bool _compilationReferencesInitialized;
-        private object _compilationReferencesLock = new object();
         private readonly DebugInformationFormat _pdbFormat =
 #if NET451
                 SymbolsUtility.SupportsFullPdbGeneration() ?
@@ -49,38 +42,23 @@ namespace ViewComponentTagHelper
                       loggerFactory
                       )
         {
-            _compilationReferences = new List<MetadataReference>();
             _optionsAccessor = optionsAccessor;
-            _compilationReferences = base.GetCompilationReferences();
-            _dynamicRoslynCompilationServiceFactory = new DynamicRoslynCompilationServiceFactory();
+            _dynamicRoslynCompilationServiceFactory = new DynamicRoslynCompilationServiceFactory(optionsAccessor);
         }
 
-        private void UpdateCompilationReferences()
+        public CompilationResult AddReferenceAndCompile(RelativeFileInfo fileInfo, string compilationContent)
         {
-            _compilationReferences.Concat(base.GetCompilationReferences());
-            _compilationReferences = _compilationReferences.Distinct().ToList();
-        }
-
-        private void UpdateCompilationReferences(MetadataReference metadataReference)
-        {
-            _compilationReferences.Add(metadataReference);
-            UpdateCompilationReferences();
-        }
-
-        public CompilationResult CompileAndAddReference(RelativeFileInfo fileInfo, string compilationContent)
-        {
+            // Create a compilation. 
             var compilation = _dynamicRoslynCompilationServiceFactory.CreateCSharpCompilation(fileInfo,
                 compilationContent,
-                CompilationReferences,
-                _optionsAccessor
+                GetCompilationReferences()
                 );
-            compilation = Rewrite(compilation);
 
             // Add metadata references of the new CSharpCompilation compilation to the references.
-            UpdateCompilationReferences(compilation.ToMetadataReference());
+            _dynamicRoslynCompilationServiceFactory.AddToReferenceCache(compilation.ToMetadataReference());
 
+            // Create the compilation.
             var compilationContext = new RoslynCompilationContext(compilation);
-
             var compilationCallback = _optionsAccessor.Value.CompilationCallback;
             compilationCallback(compilationContext);
             compilation = compilationContext.Compilation;
@@ -119,36 +97,10 @@ namespace ViewComponentTagHelper
 
         protected override IList<MetadataReference> GetCompilationReferences()
         {
-            UpdateCompilationReferences();
-            return _compilationReferences;
-        }
+            var references = _dynamicRoslynCompilationServiceFactory.GetReferenceCache();
+            references = references.Concat(base.GetCompilationReferences()).Distinct().ToList();
 
-        private IList<MetadataReference> CompilationReferences
-        {
-            get
-            {
-                UpdateCompilationReferences();
-                return LazyInitializer.EnsureInitialized(
-                    ref _compilationReferences,
-                    ref _compilationReferencesInitialized,
-                    ref _compilationReferencesLock,
-                    GetCompilationReferences);
-            }
-        }
-
-        private CSharpCompilation Rewrite(CSharpCompilation compilation)
-        {
-            var rewrittenTrees = new List<SyntaxTree>();
-            foreach (var tree in compilation.SyntaxTrees)
-            {
-                var semanticModel = compilation.GetSemanticModel(tree, ignoreAccessibility: true);
-                var rewriter = new ExpressionRewriter(semanticModel);
-
-                var rewrittenTree = tree.WithRootAndOptions(rewriter.Visit(tree.GetRoot()), tree.Options);
-                rewrittenTrees.Add(rewrittenTree);
-            }
-
-            return compilation.RemoveAllSyntaxTrees().AddSyntaxTrees(rewrittenTrees);
+            return references;
         }
 
         private Assembly LoadStream(MemoryStream assemblyStream, MemoryStream pdbStream)
