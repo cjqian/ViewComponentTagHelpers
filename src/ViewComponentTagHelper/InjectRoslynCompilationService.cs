@@ -36,7 +36,17 @@ namespace ViewComponentTagHelper
 #endif
         private readonly IOptions<RazorViewEngineOptions> _optionsAccessor;
 
-        public InjectRoslynCompilationService(ApplicationPartManager partManager, IOptions<RazorViewEngineOptions> optionsAccessor, IRazorViewEngineFileProviderAccessor fileProviderAccessor, ILoggerFactory loggerFactory) : base(partManager, optionsAccessor, fileProviderAccessor, loggerFactory)
+        public InjectRoslynCompilationService(
+            ApplicationPartManager partManager, 
+            IOptions<RazorViewEngineOptions> optionsAccessor, 
+            IRazorViewEngineFileProviderAccessor fileProviderAccessor, 
+            ILoggerFactory loggerFactory) 
+                : base(
+                      partManager, 
+                      optionsAccessor, 
+                      fileProviderAccessor, 
+                      loggerFactory
+                      )
         {
             _compilationReferences = new List<MetadataReference>();
             _optionsAccessor = optionsAccessor;

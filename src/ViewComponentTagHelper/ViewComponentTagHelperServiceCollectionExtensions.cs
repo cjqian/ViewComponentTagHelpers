@@ -14,7 +14,7 @@ namespace ViewComponentTagHelper
         {
             services.AddTransient<IMvcRazorHost, ViewComponentMvcRazorHost>();
             services.AddSingleton<ICompilationService, InjectRoslynCompilationService>();
-            //services.AddSingleton<ITagHelperTypeResolver, ViewComponentTagHelperTypeResolver>();
+            services.AddSingleton<ITagHelperTypeResolver, ViewComponentTagHelperTypeResolver>();
             return services;
         }
     }
