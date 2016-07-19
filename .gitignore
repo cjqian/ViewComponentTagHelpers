@@ -1,5 +1,8 @@
 .vs/*
-sample/ViewComponentTagHelpers.Web/bin/*
-sample/ViewComponentTagHelpers.Web/obj/*
-src/ViewComponentTagHelpers/bin/*
-src/ViewComponentTagHelpers/obj/*
+*.rsp
+*.pdb
+*.dll
+sample/ViewComponentTagHelpers.Web/bin/
+sample/ViewComponentTagHelpers.Web/obj/
+src/ViewComponentTagHelpers/bin/
+src/ViewComponentTagHelpers/obj/

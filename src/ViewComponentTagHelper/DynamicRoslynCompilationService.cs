@@ -35,6 +35,7 @@ namespace ViewComponentTagHelper
                 DebugInformationFormat.PortablePdb;
 #endif
         private readonly IOptions<RazorViewEngineOptions> _optionsAccessor;
+        private DynamicRoslynCompilationServiceFactory _dynamicRoslynCompilationServiceFactory;
 
         public DynamicRosylnCompilationService(
             ApplicationPartManager partManager, 
@@ -51,6 +52,7 @@ namespace ViewComponentTagHelper
             _compilationReferences = new List<MetadataReference>();
             _optionsAccessor = optionsAccessor;
             _compilationReferences = base.GetCompilationReferences();
+            _dynamicRoslynCompilationServiceFactory = new DynamicRoslynCompilationServiceFactory();
         }
 
         private void UpdateCompilationReferences()
@@ -67,37 +69,11 @@ namespace ViewComponentTagHelper
 
         public CompilationResult CompileAndAddReference(RelativeFileInfo fileInfo, string compilationContent)
         {
-            if (fileInfo == null)
-            {
-                throw new ArgumentNullException(nameof(fileInfo));
-            }
-
-            if (compilationContent == null)
-            {
-                throw new ArgumentNullException(nameof(compilationContent));
-            }
-
-
-            // CR: Instead of injecting rosyln compilation service, move this to
-            // another class an
-            // Creates a CSharpCompilation using arguments in preparation of compilation. 
-            var assemblyName = Path.GetRandomFileName();
-            var parseOptions = _optionsAccessor.Value.ParseOptions;
-
-            var sourceText = SourceText.From(compilationContent, Encoding.UTF8);
-            var syntaxTree = CSharpSyntaxTree.ParseText(
-                sourceText,
-                path: assemblyName,
-                options: parseOptions);
-
-
-            var compilationOptions = _optionsAccessor.Value.CompilationOptions;
-            var compilation = CSharpCompilation.Create(
-                assemblyName,
-                options: compilationOptions,
-                syntaxTrees: new[] { syntaxTree },
-                references: CompilationReferences);
-
+            var compilation = _dynamicRoslynCompilationServiceFactory.CreateCSharpCompilation(fileInfo,
+                compilationContent,
+                CompilationReferences,
+                _optionsAccessor
+                );
             compilation = Rewrite(compilation);
 
             // Add metadata references of the new CSharpCompilation compilation to the references.
