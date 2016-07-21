@@ -1,86 +1,78 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Microsoft.Extensions.Options;
 
 namespace ViewComponentTagHelper
 {
     public class ViewComponentTagHelperTypeProvider
     {
         private readonly IViewComponentDescriptorProvider _viewComponentDescriptorProvider;
-        private readonly ViewComponentTagHelperGenerator _ViewComponentTagHelperGenerator;
-        private readonly DynamicRosylnCompilationService _compilationService;
+        private readonly ViewComponentTagHelperGenerator _viewComponentTagHelperGenerator;
 
-        private readonly Dictionary<string, Type> _compiledTagHelperTypesByName;
-        private readonly Dictionary<string, List<TypeInfo>> _compiledTagHelperTypesByAssembly;
+        private readonly ReferenceManager _referenceManager;
+        private readonly ViewComponentCompilationService _viewComponentCompilationService;
+
+        private readonly Dictionary<string, TypeInfo> _compiledTypes;
 
         public ViewComponentTagHelperTypeProvider(
             IViewComponentDescriptorProvider viewComponentDescriptorProvider,
-            ICompilationService compilationService)
+            ViewComponentCompilationService viewComponentCompilationService,
+            ReferenceManager referenceManager)
         {
-            _viewComponentDescriptorProvider = viewComponentDescriptorProvider;
-            _compilationService = (DynamicRosylnCompilationService)compilationService;
+            _referenceManager = referenceManager;
 
-            _compiledTagHelperTypesByName = new Dictionary<string, Type>();
-            _compiledTagHelperTypesByAssembly = new Dictionary<string, List<TypeInfo>>();
+            _viewComponentCompilationService = viewComponentCompilationService;
+            _viewComponentDescriptorProvider = viewComponentDescriptorProvider;
+
+            _compiledTypes = new Dictionary<string, TypeInfo>();
 
             // TODO: put all classes together so compile/make references once?
             // TODO: embed or write out individual template
 
-            _ViewComponentTagHelperGenerator = new ViewComponentTagHelperGenerator();
-        }
-
-        public IList<TypeInfo> GetTagHelperTypes(AssemblyName assembly)
-        {
-            UpdateTagHelperTypes();
-
-            List<TypeInfo> typeList;
-            if (_compiledTagHelperTypesByAssembly.TryGetValue(assembly.Name, out typeList))
-            {
-                return typeList;
-            };
-
-            return null;
+            _viewComponentTagHelperGenerator = new ViewComponentTagHelperGenerator();
         }
 
         // Creates a tag helper for each view component and caches. 
-        private void UpdateTagHelperTypes()
+        public IEnumerable<TypeInfo> GetTagHelperTypes()
         {
+            var tagHelperTypes = new List<TypeInfo>();
+
             var viewComponentDescriptors = _viewComponentDescriptorProvider.GetViewComponents();
             foreach (var viewComponentDescriptor in viewComponentDescriptors)
             {
-                if (!_compiledTagHelperTypesByName.ContainsKey(viewComponentDescriptor.ShortName))
+                // hashset of types that we've added CR:
+                if (!_compiledTypes.ContainsKey(viewComponentDescriptor.FullName))
                 {
                     var fileInfo = new DummyFileInfo();
                     var relativeFileInfo = new RelativeFileInfo(fileInfo, "./");
 
                     // Generates a tagHelperFile (string .cs tag helper equivalent of the tag helper.)
-                    var tagHelperFile = _ViewComponentTagHelperGenerator.WriteTagHelper(viewComponentDescriptor);
-                    var compilationResult = _compilationService.AddReferenceAndCompile(relativeFileInfo, tagHelperFile);
+                    var tagHelperFile = _viewComponentTagHelperGenerator.WriteTagHelper(viewComponentDescriptor);
 
-                    // Cache. 
-                    var type = compilationResult.CompiledType;
+                    var compilation = _viewComponentCompilationService.CreateCSharpCompilation(relativeFileInfo, tagHelperFile);
+                    var compilationResult = _viewComponentCompilationService.Compile(compilation);
+                    _referenceManager.AddReference(compilation.ToMetadataReference());
 
-                    _compiledTagHelperTypesByName[viewComponentDescriptor.ShortName] = type;
-
-                    // If this is a new namespace, we create a new list.
-                    // We add the type to its associated assemblies.
-
-                    List<TypeInfo> typeList;
-                    if (!_compiledTagHelperTypesByAssembly.TryGetValue(type.Namespace, out typeList))
-                    {
-                        typeList = new List<TypeInfo>();
-                        _compiledTagHelperTypesByAssembly[type.Namespace] = typeList;
-                    }
-
-                    typeList.Add(type.GetTypeInfo());
+                    _compiledTypes[viewComponentDescriptor.FullName] = compilationResult.CompiledType.GetTypeInfo();
                 }
 
+                tagHelperTypes.Add(_compiledTypes[viewComponentDescriptor.FullName]);
             }
+
+            if (tagHelperTypes.Count == 0)
+            {
+                return Enumerable.Empty<TypeInfo>();
+            }
+
+            return tagHelperTypes;
         }
     }
 }

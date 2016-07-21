@@ -26,7 +26,6 @@ namespace ViewComponentTagHelper
 		// CustomParameters = 2
         [[2]]
 		
-		//Override process async, move logic to here. CR:
         public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
         {
 			((IViewContextAware)_viewComponentHelper).Contextualize(ViewContext);
