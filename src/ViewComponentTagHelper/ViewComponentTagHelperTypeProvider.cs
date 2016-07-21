@@ -4,11 +4,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.Extensions.Options;
 
 namespace ViewComponentTagHelper
 {
@@ -48,7 +45,6 @@ namespace ViewComponentTagHelper
             var viewComponentDescriptors = _viewComponentDescriptorProvider.GetViewComponents();
             foreach (var viewComponentDescriptor in viewComponentDescriptors)
             {
-                // hashset of types that we've added CR:
                 if (!_compiledTypes.ContainsKey(viewComponentDescriptor.FullName))
                 {
                     var fileInfo = new DummyFileInfo();

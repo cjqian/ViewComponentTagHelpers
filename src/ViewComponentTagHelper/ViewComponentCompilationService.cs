@@ -15,8 +15,6 @@ using Microsoft.Extensions.Options;
 
 namespace ViewComponentTagHelper
 {
-    // Overrides default, and updates get references
-    // Also has a reference manager
     public class ViewComponentCompilationService
     {
         private IOptions<RazorViewEngineOptions> _optionsAccessor;
@@ -60,7 +58,6 @@ namespace ViewComponentTagHelper
                 sourceText,
                 path: assemblyName,
                 options: parseOptions);
-
 
             var compilationOptions = _optionsAccessor.Value.CompilationOptions;
             var compilation = CSharpCompilation.Create(
