@@ -22,5 +22,7 @@ cd ../../../ViewComponentTagHelper/sample/ViewComponentTagHelper.Web/
 dotnet restore
 dotnet build
 
-# dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.TagHelpers
+echo "Resolving tag helpers. "
+dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.TagHelpers > tmp.json
+start chrome tmp.json
 
