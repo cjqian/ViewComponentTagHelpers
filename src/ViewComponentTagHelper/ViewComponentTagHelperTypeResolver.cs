@@ -31,7 +31,7 @@ namespace ViewComponentTagHelper
                 throw new ArgumentNullException(nameof(assemblyName));
             }
 
-            var  results = base.GetExportedTypes(assemblyName);
+            var results = base.GetExportedTypes(assemblyName);
             var tagHelperTypes = _viewComponentTagHelperTypeProvider.GetTagHelperTypes();
             foreach (var tagHelperType in tagHelperTypes)
             {

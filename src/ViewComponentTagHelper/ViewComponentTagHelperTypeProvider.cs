@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Microsoft.AspNetCore.Razor;
 
 namespace ViewComponentTagHelper
 {
@@ -52,14 +53,16 @@ namespace ViewComponentTagHelper
 
                     // Generates a tagHelperFile (string .cs tag helper equivalent of the tag helper.)
                     var tagHelperFile = _viewComponentTagHelperGenerator.WriteTagHelper(viewComponentDescriptor);
-
                     var compilation = _viewComponentCompilationService.CreateCSharpCompilation(relativeFileInfo, tagHelperFile);
                     var compilationResult = _viewComponentCompilationService.Compile(compilation);
+
                     _referenceManager.AddReference(compilation.ToMetadataReference());
 
                     _compiledTypes[viewComponentDescriptor.FullName] = compilationResult.CompiledType.GetTypeInfo();
+                    var curType = compilationResult.CompiledType;
+                    var curTypeInfo = curType.GetTypeInfo();
                 }
-
+        
                 tagHelperTypes.Add(_compiledTypes[viewComponentDescriptor.FullName]);
             }
 

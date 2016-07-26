@@ -23,6 +23,10 @@ dotnet restore
 dotnet build
 
 echo "Resolving tag helpers. "
-dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.TagHelpers > tmp.json
-start chrome tmp.json
+#dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.Razor 
+#dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.TagHelpers 
+#dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.TagHelpers > tmp.json
+#dotnet razor-tooling resolve-viewcomponents ./project.json ViewComponentTagHelpers > tmp.json
+dotnet -v razor-tooling resolve-viewcomponents ./project.json ViewComponentTagHelpers 
+#start chrome tmp.json
 
