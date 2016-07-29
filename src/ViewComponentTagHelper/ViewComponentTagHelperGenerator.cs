@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
@@ -10,16 +11,31 @@ namespace ViewComponentTagHelper
 {
     public class ViewComponentTagHelperGenerator
     {
+        private readonly string _usings;
         private readonly string _lines;
+        private readonly string _namespace;
 
         public ViewComponentTagHelperGenerator()
         {
             // Yes, this is over 120 characters, but hopefully we will someday not need the whole path.
-            var rootDirectory = "C:\\Users\\t-crqian\\Documents\\Visual Studio 2015\\Projects\\ViewComponentTagHelper\\src\\ViewComponentTagHelper\\";
+            var rootDirectory = "C:\\Users\\t-crqian\\Documents\\Visual Studio 2015\\Projects\\ViewComponentTagHelper\\src\\ViewComponentTagHelper\\Templates\\";
+            _namespace = "\nnamespace ViewComponentTagHelper\n";
+            var usingsFile = "Usings.txt";
+            _usings = TranslateForStringFormatting(System.IO.File.ReadAllLines(rootDirectory + usingsFile));
             var templateFile = "ViewComponentTagHelperTemplate.txt";
             _lines = TranslateForStringFormatting(System.IO.File.ReadAllLines(rootDirectory + templateFile));
         }
 
+        public ViewComponentTagHelperGenerator(string namespaceName)
+        {
+            // Yes, this is over 120 characters, but hopefully we will someday not need the whole path.
+            var rootDirectory = "C:\\Users\\t-crqian\\Documents\\Visual Studio 2015\\Projects\\ViewComponentTagHelper\\src\\ViewComponentTagHelper\\Templates\\";
+            _namespace = "\nnamespace " + namespaceName + "\n";
+            var usingsFile = "Usings.txt";
+            _usings = TranslateForStringFormatting(System.IO.File.ReadAllLines(rootDirectory + usingsFile));
+            var templateFile = "ViewComponentTagHelperTemplate.txt";
+            _lines = TranslateForStringFormatting(System.IO.File.ReadAllLines(rootDirectory + templateFile));
+        }
         private string TranslateForStringFormatting(string[] lines)
         {
             for (int i = 0; i < lines.Length; i++)
@@ -33,6 +49,35 @@ namespace ViewComponentTagHelper
         }
 
         public string WriteTagHelper(ViewComponentDescriptor viewComponentDescriptor)
+        {
+            var stringBuilder = new StringBuilder();
+
+            stringBuilder.Append(_namespace);
+            stringBuilder.Append("{");
+            stringBuilder.Append(_usings);
+            stringBuilder.Append(WriteInnerClass(viewComponentDescriptor));
+
+            stringBuilder.Append("}");
+            return stringBuilder.ToString();
+        }
+
+        public string WriteTagHelpers(IEnumerable<ViewComponentDescriptor> viewComponentDescriptors)
+        {
+            var stringBuilder = new StringBuilder();
+
+            stringBuilder.Append(_namespace);
+            stringBuilder.Append("{");
+            stringBuilder.Append(_usings);
+
+            foreach (var viewComponentDescriptor in viewComponentDescriptors)
+            {
+                stringBuilder.Append(WriteInnerClass(viewComponentDescriptor));
+            }
+
+            stringBuilder.Append("}\n");
+            return stringBuilder.ToString();
+        }
+        public string WriteInnerClass(ViewComponentDescriptor viewComponentDescriptor)
         {
             var viewComponentName = viewComponentDescriptor.ShortName;
             var lowerKebab = GetLowerKebab(viewComponentName);

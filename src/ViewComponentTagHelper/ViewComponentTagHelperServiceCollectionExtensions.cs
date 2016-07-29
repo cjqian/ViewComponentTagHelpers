@@ -14,6 +14,7 @@ namespace ViewComponentTagHelper
         {
             services.AddTransient<IMvcRazorHost, ViewComponentMvcRazorHost>();
 
+            services.AddSingleton<TagHelperDescriptorFactory>(_ => new TagHelperDescriptorFactory(true));
             services.AddSingleton<ICompilationService, DynamicRosylnCompilationService>();
             services.AddSingleton<ViewComponentCompilationService>();
             services.AddSingleton<ReferenceManager>();
