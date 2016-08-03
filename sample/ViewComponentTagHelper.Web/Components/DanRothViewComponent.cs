@@ -1,15 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ViewComponentTagHelper.Web
 {
-    public class DanRothViewComponent : ViewComponent
+    public class DanRothViewComponent : ViewComponent  
     {
         private string _asciiTextString = @"C:\Users\t-crqian\Documents\visual studio 2015\Projects\ViewComponentTagHelper\sample\ViewComponentTagHelper.Web\wwwroot\DanRoth.txt";
         public IViewComponentResult Invoke(string jacketColor)

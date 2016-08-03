@@ -2,11 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
-using Microsoft.AspNetCore.Razor;
 
 namespace ViewComponentTagHelper
 {
@@ -38,7 +36,7 @@ namespace ViewComponentTagHelper
             _viewComponentTagHelperGenerator = new ViewComponentTagHelperGenerator();
         }
 
-        // Creates a tag helper for each view component and caches. 
+        // Creates a tag helper for each view component. 
         public IEnumerable<TypeInfo> GetTagHelperTypes()
         {
             var tagHelperTypes = new List<TypeInfo>();
@@ -48,27 +46,20 @@ namespace ViewComponentTagHelper
             {
                 if (!_compiledTypes.ContainsKey(viewComponentDescriptor.FullName))
                 {
-                    var fileInfo = new DummyFileInfo();
-                    var relativeFileInfo = new RelativeFileInfo(fileInfo, "./");
-
-                    // Generates a tagHelperFile (string .cs tag helper equivalent of the tag helper.)
+                    // Generates a "fake" tag helper class from the view component and compile.
                     var tagHelperFile = _viewComponentTagHelperGenerator.WriteTagHelper(viewComponentDescriptor);
-                    var compilation = _viewComponentCompilationService.CreateCSharpCompilation(relativeFileInfo, tagHelperFile);
+                    var compilation = _viewComponentCompilationService.CreateCSharpCompilation(
+                        new RelativeFileInfo(new DummyFileInfo(), "./"),
+                        tagHelperFile
+                        );
                     var compilationResult = _viewComponentCompilationService.Compile(compilation);
 
+                    // Add reference to compilation to global list, and store so we no longer need to compile this time.
                     _referenceManager.AddReference(compilation.ToMetadataReference());
-
                     _compiledTypes[viewComponentDescriptor.FullName] = compilationResult.CompiledType.GetTypeInfo();
-                    var curType = compilationResult.CompiledType;
-                    var curTypeInfo = curType.GetTypeInfo();
                 }
-        
-                tagHelperTypes.Add(_compiledTypes[viewComponentDescriptor.FullName]);
-            }
 
-            if (tagHelperTypes.Count == 0)
-            {
-                return Enumerable.Empty<TypeInfo>();
+                tagHelperTypes.Add(_compiledTypes[viewComponentDescriptor.FullName]);
             }
 
             return tagHelperTypes;

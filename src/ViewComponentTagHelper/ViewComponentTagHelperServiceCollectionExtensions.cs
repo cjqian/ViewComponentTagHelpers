@@ -13,12 +13,12 @@ namespace ViewComponentTagHelper
         public static IServiceCollection AddViewComponentTagHelper(this IServiceCollection services)
         {
             services.AddTransient<IMvcRazorHost, ViewComponentMvcRazorHost>();
-
-            services.AddSingleton<TagHelperDescriptorFactory>(_ => new TagHelperDescriptorFactory(true));
-            services.AddSingleton<ICompilationService, DynamicRosylnCompilationService>();
-            services.AddSingleton<ViewComponentCompilationService>();
             services.AddSingleton<ReferenceManager>();
 
+            services.AddSingleton<ICompilationService, DynamicRosylnCompilationService>();
+            services.AddSingleton<ViewComponentCompilationService>();
+
+            services.AddSingleton<ViewComponentTagHelperTypeProvider>();
             services.AddSingleton<ITagHelperTypeResolver, ViewComponentTagHelperTypeResolver>();
             return services;
         }

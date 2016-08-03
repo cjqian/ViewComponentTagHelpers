@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
-using System.Text;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
@@ -45,11 +44,7 @@ namespace ViewComponentTagHelper
         CompilationResult ICompilationService.Compile(RelativeFileInfo fileInfo,
     string compilationContent)
         {
-      
-
-            //return base.Compile(fileInfo, compilationContent);
-            return base.Compile(fileInfo, newCompilationContent);
+            return base.Compile(fileInfo, compilationContent);
         }
-
     }
 }

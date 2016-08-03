@@ -22,13 +22,14 @@ namespace ViewComponentTagHelper
             _namespace = "\nnamespace ViewComponentTagHelper\n";
             var usingsFile = "Usings.txt";
             _usings = TranslateForStringFormatting(System.IO.File.ReadAllLines(rootDirectory + usingsFile));
-            var templateFile = "ViewComponentTagHelperTemplate.txt";
+            var templateFile = "Class.txt";
             _lines = TranslateForStringFormatting(System.IO.File.ReadAllLines(rootDirectory + templateFile));
         }
 
         public ViewComponentTagHelperGenerator(string namespaceName)
         {
             // Yes, this is over 120 characters, but hopefully we will someday not need the whole path.
+            // Sorry, David.
             var rootDirectory = "C:\\Users\\t-crqian\\Documents\\Visual Studio 2015\\Projects\\ViewComponentTagHelper\\src\\ViewComponentTagHelper\\Templates\\";
             _namespace = "\nnamespace " + namespaceName + "\n";
             var usingsFile = "Usings.txt";
@@ -36,6 +37,7 @@ namespace ViewComponentTagHelper
             var templateFile = "ViewComponentTagHelperTemplate.txt";
             _lines = TranslateForStringFormatting(System.IO.File.ReadAllLines(rootDirectory + templateFile));
         }
+
         private string TranslateForStringFormatting(string[] lines)
         {
             for (int i = 0; i < lines.Length; i++)
@@ -45,6 +47,7 @@ namespace ViewComponentTagHelper
                 lines[i] = lines[i].Replace("[[", "{");
                 lines[i] = lines[i].Replace("]]", "}");
             }
+
             return LinesToString(lines);
         }
 
@@ -56,8 +59,8 @@ namespace ViewComponentTagHelper
             stringBuilder.Append("{");
             stringBuilder.Append(_usings);
             stringBuilder.Append(WriteInnerClass(viewComponentDescriptor));
-
             stringBuilder.Append("}");
+
             return stringBuilder.ToString();
         }
 

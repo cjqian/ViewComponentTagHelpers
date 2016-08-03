@@ -7,6 +7,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.Razor.Internal;
+using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
@@ -27,14 +28,17 @@ namespace ViewComponentTagHelper
                 DebugInformationFormat.PortablePdb;
 #endif
         private ReferenceManager _referenceManager;
+        private IViewComponentDescriptorProvider _viewComponentDescriptorProvider;
 
         public ViewComponentCompilationService(
             IOptions<RazorViewEngineOptions> optionsAccessor,
-            ReferenceManager referenceManager
+            ReferenceManager referenceManager,
+            IViewComponentDescriptorProvider viewComponentDescriptorProvider
             )
         {
             _optionsAccessor = optionsAccessor;
             _referenceManager = referenceManager;
+            _viewComponentDescriptorProvider = viewComponentDescriptorProvider;
         }
         
         public CSharpCompilation CreateCSharpCompilation(RelativeFileInfo fileInfo, string compilationContent)

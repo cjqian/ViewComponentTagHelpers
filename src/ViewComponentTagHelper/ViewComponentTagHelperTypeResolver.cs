@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 
 namespace ViewComponentTagHelper
@@ -12,16 +11,10 @@ namespace ViewComponentTagHelper
         private readonly ViewComponentTagHelperTypeProvider _viewComponentTagHelperTypeProvider;
 
         public ViewComponentTagHelperTypeResolver(
-            IViewComponentDescriptorProvider viewComponentDescriptorProvider,
-            ViewComponentCompilationService viewComponentCompilationService,
-            ReferenceManager referenceManager
+            ViewComponentTagHelperTypeProvider viewComponentTagHelperTypeProvider 
             ) : base()
         {
-            _viewComponentTagHelperTypeProvider = new ViewComponentTagHelperTypeProvider(
-                viewComponentDescriptorProvider,
-                viewComponentCompilationService,
-                referenceManager
-                );
+            _viewComponentTagHelperTypeProvider = viewComponentTagHelperTypeProvider;
         }
 
         protected override IEnumerable<TypeInfo> GetExportedTypes(AssemblyName assemblyName)
@@ -31,13 +24,15 @@ namespace ViewComponentTagHelper
                 throw new ArgumentNullException(nameof(assemblyName));
             }
 
-            var results = base.GetExportedTypes(assemblyName);
+            // Get tag helper types of view components, appened to list of types for
+            // this particular namespace (if appropriate), and return results.
+            var results = base.GetExportedTypes(assemblyName).ToList();
             var tagHelperTypes = _viewComponentTagHelperTypeProvider.GetTagHelperTypes();
             foreach (var tagHelperType in tagHelperTypes)
             {
                 if (tagHelperType.Namespace.Equals(assemblyName.Name))
                 {
-                    results = results.Append(tagHelperType);
+                    results.Add(tagHelperType);
                 }
             }
 

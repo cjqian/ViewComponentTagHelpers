@@ -10,10 +10,10 @@ namespace ViewComponentTagHelper.Web
 {
     public class AboutViewComponent : ViewComponent
     {
-        public IViewComponentResult Invoke(string email, string phoneNumber, string cat, string pranav)
+        public IViewComponentResult Invoke(string email, string phoneNumber)
         {
             this.GetType().GetTypeInfo();
-            return View("About", new { email, phoneNumber, cat, pranav });
+            return View("About", new { email, phoneNumber});
         }
     }
 }
