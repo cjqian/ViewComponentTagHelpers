@@ -1,15 +1,5 @@
-﻿using System;
-using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-
-namespace ViewComponentTagHelper
-{
-	// HtmlTargetElement = 0
-    [HtmlTargetElement("vc:[[0]]")]
+﻿	// HtmlTargetElement = 0
+    [HtmlTargetElement("vc:[[0]]", TagStructure = TagStructure.NormalOrSelfClosing)]
 	// ViewComponentName = 1 
     public class [[1]]ViewComponentTagHelper: TagHelper
     {
@@ -31,7 +21,8 @@ namespace ViewComponentTagHelper
 			((IViewContextAware)_viewComponentHelper).Contextualize(ViewContext);
 			// ParametersObject = 3
             var viewContent = await _viewComponentHelper.InvokeAsync("[[1]]", new {[[3]]});	
+
+			output.TagName = "";
 			output.Content.SetHtmlContent(viewContent);
         }
     }
-}

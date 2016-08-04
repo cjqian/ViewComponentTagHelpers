@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 //namespace ViewComponentTagHelper.Web.Components
 namespace ViewComponentTagHelper.Web
 {
-    public class AboutViewComponent : ViewComponent
+    public class DavidViewComponent : ViewComponent
     {
-        public IViewComponentResult Invoke(string email, string phoneNumber)
+        public IViewComponentResult Invoke(string money, string power)
         {
             this.GetType().GetTypeInfo();
-            return View("About", new { email, phoneNumber});
+            return View("David", new { money, power });
         }
     }
 }
