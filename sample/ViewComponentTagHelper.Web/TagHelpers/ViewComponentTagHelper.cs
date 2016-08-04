@@ -1,5 +1,4 @@
-﻿/*
-namespace ViewComponentTagHelper.Web
+﻿namespace ViewComponentTagHelper.Web
 {
     using System;
     using System.Threading.Tasks;
@@ -8,7 +7,7 @@ namespace ViewComponentTagHelper.Web
     using Microsoft.AspNetCore.Mvc.ViewFeatures;
     using Microsoft.AspNetCore.Razor.TagHelpers;
     // HtmlTargetElement = 0
-    [HtmlTargetElement("vc: about", TagStructure = TagStructure.NormalOrSelfClosing)]
+    [HtmlTargetElement("vc:about", TagStructure = TagStructure.NormalOrSelfClosing)]
     // ViewComponentName = 1 
     public class AboutViewComponentTagHelper : TagHelper
     {
@@ -37,4 +36,4 @@ namespace ViewComponentTagHelper.Web
             output.Content.SetHtmlContent(viewContent);
         }
     }
-}*/
+}

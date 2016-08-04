@@ -3,6 +3,7 @@
 
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
+using Microsoft.AspNetCore.Razor.Compilation.TagHelpers;
 using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,13 +14,8 @@ namespace ViewComponentTagHelper
         public static IServiceCollection AddViewComponentTagHelper(this IServiceCollection services)
         {
             services.AddTransient<IMvcRazorHost, ViewComponentMvcRazorHost>();
-            services.AddSingleton<ReferenceManager>();
-
             services.AddSingleton<ICompilationService, DynamicRosylnCompilationService>();
-            services.AddSingleton<ViewComponentCompilationService>();
-
-            services.AddSingleton<ViewComponentTagHelperTypeProvider>();
-            services.AddSingleton<ITagHelperTypeResolver, ViewComponentTagHelperTypeResolver>();
+            services.AddSingleton<ITagHelperDescriptorResolver, ViewComponentTagHelperDescriptorResolver>();
             return services;
         }
     }
