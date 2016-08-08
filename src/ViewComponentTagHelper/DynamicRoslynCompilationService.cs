@@ -15,16 +15,13 @@ namespace ViewComponentTagHelper
 {
     public class DynamicRosylnCompilationService : DefaultRoslynCompilationService, ICompilationService
     {
-        private ReferenceManager _referenceManager;
-        private IViewComponentDescriptorProvider _viewComponentDescriptorProvider;
 
         public DynamicRosylnCompilationService(
             ApplicationPartManager partManager, 
             IOptions<RazorViewEngineOptions> optionsAccessor, 
             IRazorViewEngineFileProviderAccessor fileProviderAccessor, 
-            ILoggerFactory loggerFactory,
-            ReferenceManager referenceManager,
-            IViewComponentDescriptorProvider viewComponentDescriptorProvider) 
+            ILoggerFactory loggerFactory
+            ) 
                 : base(
                       partManager, 
                       optionsAccessor, 
@@ -32,15 +29,8 @@ namespace ViewComponentTagHelper
                       loggerFactory
                       )
         {
-            _referenceManager = referenceManager;
-            _viewComponentDescriptorProvider = viewComponentDescriptorProvider;
         }
-
-        protected override IList<MetadataReference> GetCompilationReferences()
-        {
-            return _referenceManager.GetReferences();
-        }
-
+       
         CompilationResult ICompilationService.Compile(RelativeFileInfo fileInfo,
     string compilationContent)
         {

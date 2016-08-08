@@ -1,4 +1,9 @@
 ﻿{
-  "projects": [ "src", "sample", "C:\\Users\\t-crqian\\Documents\\Visual Studio 2015\\Projects\\Razor" ]
+  "projects": [
+    "src",
+    "sample",
+    "C:\\Users\\t-crqian\\Documents\\Visual Studio 2015\\Projects\\Razor\\src",
+    "C:\\Users\\t-crqian\\Documents\\Visual Studio 2015\\Projects\\Mvc\\src"
+  ]
   //"projects": [ "sample", "C:\\Users\\t-crqian\\Documents\\Visual Studio 2015\\Projects\\Razor" ]
 }
