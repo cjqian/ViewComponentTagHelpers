@@ -30,13 +30,7 @@ namespace ViewComponentTagHelper
                       )
         {
         }
-
-        /*
-        protected override IList<MetadataReference> GetCompilationReferences()
-        {
-            return _referenceManager.GetReferences();
-        }
-        */
+       
         CompilationResult ICompilationService.Compile(RelativeFileInfo fileInfo,
     string compilationContent)
         {

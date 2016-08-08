@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.Razor;
 using Microsoft.AspNetCore.Razor.Compilation.TagHelpers;
@@ -14,7 +14,7 @@ namespace ViewComponentTagHelper
     public class ViewComponentTagHelperDescriptorResolver : TagHelperDescriptorResolver
     {
         private readonly Dictionary<string, List<ViewComponentDescriptor>> _viewComponentDictionary;
-
+        
         public ViewComponentTagHelperDescriptorResolver(
             IViewComponentDescriptorProvider viewComponentDescriptorProvider)
             : base(false)
@@ -23,6 +23,7 @@ namespace ViewComponentTagHelper
             var viewComponents = viewComponentDescriptorProvider.GetViewComponents();
             foreach (var viewComponent in viewComponents)
             {
+                //var assemblyName = "AspNetCore";
                 var assemblyName = viewComponent.TypeInfo.Namespace;
                 if (!_viewComponentDictionary.ContainsKey(assemblyName))
                 {
@@ -62,7 +63,10 @@ namespace ViewComponentTagHelper
         {
             var tagHelperDescriptor = new TagHelperDescriptor();
 
+            // We want the assembly to be AspNetCore. 
+            //tagHelperDescriptor.AssemblyName = "Microsoft.AspNetCore";
             tagHelperDescriptor.AssemblyName = viewComponent.TypeInfo.Namespace;
+            //tagHelperDescriptor.AssemblyName = "";
             tagHelperDescriptor.Attributes = ResolveViewComponentAttributes(viewComponent);
             tagHelperDescriptor.TagName = FormatTagName(viewComponent);
             tagHelperDescriptor.TagStructure = Microsoft.AspNetCore.Razor.TagHelpers.TagStructure.NormalOrSelfClosing;
@@ -80,6 +84,7 @@ namespace ViewComponentTagHelper
         // Returns something like "ViewComponentTagHelper.Web.AboutViewComponentTagHelper"
         private string FormatTypeName(ViewComponentDescriptor viewComponent)
         {
+            //var typeName = "Micrsoft.AspNetCore." + viewComponent.ShortName + "ViewComponentTagHelper";
             var typeName = viewComponent.DisplayName + "TagHelper";
             return typeName;
         }
@@ -87,8 +92,6 @@ namespace ViewComponentTagHelper
         private IEnumerable<TagHelperAttributeDescriptor> ResolveViewComponentAttributes(ViewComponentDescriptor viewComponent)
         {
             var tagHelperAttributeDescriptors = new List<TagHelperAttributeDescriptor>();
-            // This list needs a view context attribute.
-            tagHelperAttributeDescriptors.Add(GetViewContextAttribute());
 
             var viewComponentParameters = viewComponent.MethodInfo.GetParameters();
             foreach (var viewComponentParameter in viewComponentParameters)
@@ -108,17 +111,12 @@ namespace ViewComponentTagHelper
             tagHelperAttributeDescriptor.PropertyName = viewComponentParameter.Name;
             tagHelperAttributeDescriptor.TypeName = viewComponentParameter.ParameterType.Name;
 
+            if (tagHelperAttributeDescriptor.TypeName == "String")
+            {
+                tagHelperAttributeDescriptor.IsStringProperty = true;
+            }
+
             return tagHelperAttributeDescriptor;
-        }
-
-        private TagHelperAttributeDescriptor GetViewContextAttribute()
-        {
-            var viewContextAttribute = new TagHelperAttributeDescriptor();
-            viewContextAttribute.Name = "view-context";
-            viewContextAttribute.PropertyName = "ViewContext";
-            viewContextAttribute.TypeName = "Microsoft.AspNetCore.Mvc.Rendering.ViewContext";
-
-            return viewContextAttribute;
         }
 
         // TODO: Refer to a better version of this.
