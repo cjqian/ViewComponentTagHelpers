@@ -29,4 +29,4 @@ dotnet build
 #dotnet razor-tooling resolve-viewcomponents ./project.json ViewComponentTagHelpers > tmp.json
 #dotnet -v razor-tooling resolve-viewcomponents ./project.json ViewComponentTagHelpers 
 #start chrome tmp.json
-
+dotnet razor-tooling resolve-taghelpers ./project.json ViewComponentTagHelper.Web

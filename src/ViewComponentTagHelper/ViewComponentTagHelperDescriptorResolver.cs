@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.Razor;
 using Microsoft.AspNetCore.Razor.Compilation.TagHelpers;
@@ -23,7 +22,6 @@ namespace ViewComponentTagHelper
             var viewComponents = viewComponentDescriptorProvider.GetViewComponents();
             foreach (var viewComponent in viewComponents)
             {
-                //var assemblyName = "AspNetCore";
                 var assemblyName = viewComponent.TypeInfo.Namespace;
                 if (!_viewComponentDictionary.ContainsKey(assemblyName))
                 {
@@ -63,14 +61,12 @@ namespace ViewComponentTagHelper
         {
             var tagHelperDescriptor = new TagHelperDescriptor();
 
-            // We want the assembly to be AspNetCore. 
-            //tagHelperDescriptor.AssemblyName = "Microsoft.AspNetCore";
             tagHelperDescriptor.AssemblyName = viewComponent.TypeInfo.Namespace;
-            //tagHelperDescriptor.AssemblyName = "";
             tagHelperDescriptor.Attributes = ResolveViewComponentAttributes(viewComponent);
             tagHelperDescriptor.TagName = FormatTagName(viewComponent);
             tagHelperDescriptor.TagStructure = Microsoft.AspNetCore.Razor.TagHelpers.TagStructure.NormalOrSelfClosing;
             tagHelperDescriptor.TypeName = FormatTypeName(viewComponent);
+
             return tagHelperDescriptor;
         }
 
@@ -84,7 +80,6 @@ namespace ViewComponentTagHelper
         // Returns something like "ViewComponentTagHelper.Web.AboutViewComponentTagHelper"
         private string FormatTypeName(ViewComponentDescriptor viewComponent)
         {
-            //var typeName = "Micrsoft.AspNetCore." + viewComponent.ShortName + "ViewComponentTagHelper";
             var typeName = viewComponent.DisplayName + "TagHelper";
             return typeName;
         }
