@@ -3,6 +3,14 @@ echo "Remove NuGet packages. "
 rm -rf C:/Users/t-crqian/.nuget/packages/.tools
 rm -rf C:/Users/t-crqian/.nuget/packages/Microsoft.AspNetCore.Razor.Design
 rm -rf C:/Users/t-crqian/.nuget/packages/Microsoft.AspNetCore.Razor.Tools
+rm -rf C:/Users/t-crqian/.nuget/packages/ViewComponentTagHelper
+
+# Build ViewComponentTagHelper.
+cd src/ViewComponentTagHelper
+dotnet restore
+dotnet build
+dotnet pack -o C:/Users/t-crqian/Documents/LocalPackages
+cd ../../
 
 # Restore and pack Microsoft.AspNetCore.Razor.Design
 echo "Restore and pack Microsoft.AspNetCore.Razor.Design. "
@@ -23,6 +31,8 @@ dotnet restore
 dotnet build
 
 echo "Resolving tag helpers. "
+dotnet razor-tooling resolve-taghelpers ./project.json ViewComponentTagHelper.Web 
+#dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.TagHelpers 
 #dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.Razor 
 #dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.TagHelpers 
 #dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.TagHelpers > tmp.json
