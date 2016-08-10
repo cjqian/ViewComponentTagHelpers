@@ -104,14 +104,13 @@ namespace ViewComponentTagHelper
             propertyBag["ViewComponentShortName"] = viewComponentDescriptor.ShortName;
             propertyBag["ViewComponentName"] = viewComponentDescriptor.TypeInfo.Name;
             propertyBag["ViewComponentTypeName"] = viewComponentDescriptor.TypeInfo.FullName;
+            propertyBag["GeneratedViewComponentTagHelperName"] = $"__Generated__{viewComponentDescriptor.TypeInfo.Name}TagHelper";
              
             var tagName = TagHelperDescriptorFactory.ToHtmlCase(viewComponentDescriptor.ShortName);
             //var tagName = TagHelperDescriptorFactory.ToHtmlCase(viewComponentDescriptor.ShortName);
             var tagHelperDescriptor = new TagHelperDescriptor
             {
                 TagName = FormatTagName(viewComponentDescriptor),
-
-                // CR: TypeName too generic. __Generated__DanViewComponentTagHelper;
                 TypeName = FormatTypeName(viewComponentDescriptor),
                 AssemblyName = GetAssemblyName(viewComponentDescriptor),
                 Attributes = attributeDescriptors,
@@ -135,12 +134,11 @@ namespace ViewComponentTagHelper
             $"vc:{TagHelperDescriptorFactory.ToHtmlCase(viewComponentDescriptor.ShortName)}";
 
         private string FormatTypeName(ViewComponentDescriptor viewComponentDescriptor) =>
-            $"__Generated__{viewComponentDescriptor.TypeInfo.Name}TagHelper";
+            $"{viewComponentDescriptor.DisplayName}TagHelper";
         //__Generated__ViewComponentTagHelper.Web.AboutViewComponentTagHelper
 
         // TODO: Add support to HtmlTargetElement, HtmlAttributeName (vc: asdfadf)
-
-        // CR: Add validation of view component; valid attribute names?
+        // TODO: Add validation of view component; valid attribute names?
         private bool TryGetAttributeDescriptors(
             ViewComponentDescriptor viewComponentDescriptor,
             out IEnumerable<TagHelperAttributeDescriptor> attributeDescriptors,
@@ -162,16 +160,14 @@ namespace ViewComponentTagHelper
                     PropertyName = parameter.Name,
                     TypeName = parameter.ParameterType.FullName
                 };
-                
-                // CR: typeof(string.FullName) ?? CHeck
-                if (tagHelperAttributeDescriptor.TypeName == "System.String"
-                    || tagHelperAttributeDescriptor.TypeName.Equals("String"))
+
+                var tagHelperType = Type.GetType(tagHelperAttributeDescriptor.TypeName);
+                if (tagHelperType.Equals(typeof(string)))
                 {
                     tagHelperAttributeDescriptor.IsStringProperty = true;
                 }
 
                 descriptors.Add(tagHelperAttributeDescriptor);
-
                 if (!parameter.HasDefaultValue)
                 {
                     var requiredAttributeDescriptor = new TagHelperRequiredAttributeDescriptor

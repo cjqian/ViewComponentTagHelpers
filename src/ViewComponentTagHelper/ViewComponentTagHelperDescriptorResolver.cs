@@ -7,15 +7,13 @@ using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 
 namespace ViewComponentTagHelper
 {
-    // CR: Wrapper instead of overwriting existing TagHelperDescriptorResolver.
-    // CR: ITagHelperDescriptorResolver type now.
+    // TODO: Yoooo, we have to overwrite the existing TagHelperDescriptorResolver. 
     public class ViewComponentTagHelperDescriptorResolver : TagHelperDescriptorResolver
     {
         private ViewComponentTagHelperDescriptorFactory _descriptorFactory;
-        
         public ViewComponentTagHelperDescriptorResolver(
             IViewComponentDescriptorProvider viewComponentDescriptorProvider)
-            : base ( designTime: false ) // Note: not entirely sure about this base thing. CR:
+            : base ( designTime: false ) 
         {
             _descriptorFactory = new ViewComponentTagHelperDescriptorFactory(viewComponentDescriptorProvider);
         }
