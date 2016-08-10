@@ -31,7 +31,7 @@ dotnet restore
 dotnet build
 
 echo "Resolving tag helpers. "
-dotnet razor-tooling resolve-taghelpers ./project.json ViewComponentTagHelper.Web 
+#dotnet razor-tooling resolve-taghelpers ./project.json ViewComponentTagHelper.Web 
 #dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.TagHelpers 
 #dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.Razor 
 #dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.TagHelpers 

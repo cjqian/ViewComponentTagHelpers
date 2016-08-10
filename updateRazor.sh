@@ -1,4 +1,5 @@
-crystalPath="C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Crystal"
+rm -rf C:/Users/t-crqian/.nuget/packages/Microsoft.AspNetCore.Razor
+rm -rf C:/Users/t-crqian/.nuget/packages/Microsoft.AspNetCore.Razor.Runtime
 
 # Build and move Razor.
 echo "Building Razor."

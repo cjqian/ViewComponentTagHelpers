@@ -4,16 +4,19 @@ using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
+using Microsoft.AspNetCore.Razor;
 using Microsoft.AspNetCore.Razor.Compilation.TagHelpers;
+using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace ViewComponentTagHelper
 {
-    public class ViewComponentTagHelperDescriptorFactory
+    public class ViewComponentTagHelperDescriptorFactory : ITagHelperDescriptorFactory
     {
         private IViewComponentDescriptorProvider _viewComponentDescriptorProvider;
         private bool _hasDescriptorProvider;
 
+        // Question: should factories inherently take nothing in the constructor and have all static things?
         public ViewComponentTagHelperDescriptorFactory(IViewComponentDescriptorProvider viewComponentDescriptorProvider)
         {
             _hasDescriptorProvider = true;
@@ -37,6 +40,13 @@ namespace ViewComponentTagHelper
                 tagHelperDescriptors.Add(tagHelperDescriptor);
             }
 
+            return tagHelperDescriptors;
+        }
+
+        // Just so this is of type ITagHelperDescriptorFactory..
+        public IEnumerable<TagHelperDescriptor> CreateDescriptors(string assemblyName, Type type, ErrorSink errorSink)
+        {
+            var tagHelperDescriptors = ResolveDescriptorsInAssembly(assemblyName);
             return tagHelperDescriptors;
         }
 
@@ -78,6 +88,7 @@ namespace ViewComponentTagHelper
 
         private TagHelperDescriptor CreateTagHelperDescriptor(ViewComponentDescriptor viewComponentDescriptor)
         {
+            // Set attributes.
             IEnumerable<TagHelperAttributeDescriptor> attributeDescriptors;
             IEnumerable<TagHelperRequiredAttributeDescriptor> requiredAttributeDescriptors;
 
@@ -88,18 +99,24 @@ namespace ViewComponentTagHelper
                 throw new Exception("Something went wrong.");
             }
 
-            var tagName = GetLowerKebab(viewComponentDescriptor.ShortName);
+            // Because this is a view component, we want to add to the property bag.
+            var propertyBag = new Dictionary<string, string>();
+            propertyBag["ViewComponentShortName"] = viewComponentDescriptor.ShortName;
+            propertyBag["ViewComponentName"] = viewComponentDescriptor.TypeInfo.Name;
+            propertyBag["ViewComponentTypeName"] = viewComponentDescriptor.TypeInfo.FullName;
+            propertyBag["GeneratedViewComponentTagHelperName"] = $"__Generated__{viewComponentDescriptor.TypeInfo.Name}TagHelper";
+             
+            var tagName = TagHelperDescriptorFactory.ToHtmlCase(viewComponentDescriptor.ShortName);
+            //var tagName = TagHelperDescriptorFactory.ToHtmlCase(viewComponentDescriptor.ShortName);
             var tagHelperDescriptor = new TagHelperDescriptor
             {
-                // CR: String interpolation.
                 TagName = FormatTagName(viewComponentDescriptor),
-
-                // CR: TypeName too generic. __Generated__DanViewComponentTagHelper;
                 TypeName = FormatTypeName(viewComponentDescriptor),
                 AssemblyName = GetAssemblyName(viewComponentDescriptor),
                 Attributes = attributeDescriptors,
                 RequiredAttributes = requiredAttributeDescriptors,
-                TagStructure = TagStructure.NormalOrSelfClosing
+                TagStructure = TagStructure.NormalOrSelfClosing,
+                PropertyBag = propertyBag
             };
 
             return tagHelperDescriptor;
@@ -114,23 +131,21 @@ namespace ViewComponentTagHelper
             return assemblyName;
         }
         private string FormatTagName(ViewComponentDescriptor viewComponentDescriptor) =>
-            $"vc:{GetLowerKebab(viewComponentDescriptor.ShortName)}";
+            $"vc:{TagHelperDescriptorFactory.ToHtmlCase(viewComponentDescriptor.ShortName)}";
 
         private string FormatTypeName(ViewComponentDescriptor viewComponentDescriptor) =>
             $"{viewComponentDescriptor.DisplayName}TagHelper";
+        //__Generated__ViewComponentTagHelper.Web.AboutViewComponentTagHelper
 
-        // CR: Match method names of TagHelperDescriptorFactory
         // TODO: Add support to HtmlTargetElement, HtmlAttributeName (vc: asdfadf)
-
-        // CR: Expose lower kebab in razor.
-        // CR: Move tag helper descriptor creation into crystal.lib
-        // CR: Add validation of view component; valid attribute names?
+        // TODO: Add validation of view component; valid attribute names?
         private bool TryGetAttributeDescriptors(
             ViewComponentDescriptor viewComponentDescriptor,
             out IEnumerable<TagHelperAttributeDescriptor> attributeDescriptors,
             out IEnumerable<TagHelperRequiredAttributeDescriptor> requiredAttributeDescriptors
             )
         {
+
             var methodParameters = viewComponentDescriptor.MethodInfo.GetParameters();
             var descriptors = new List<TagHelperAttributeDescriptor>();
             var requiredDescriptors = new List<TagHelperRequiredAttributeDescriptor>();
@@ -138,7 +153,7 @@ namespace ViewComponentTagHelper
             for (var i = 0; i < methodParameters.Length; i++)
             {
                 var parameter = methodParameters[i];
-                var lowerKebabName = GetLowerKebab(parameter.Name);
+                var lowerKebabName = TagHelperDescriptorFactory.ToHtmlCase(parameter.Name);
                 var tagHelperAttributeDescriptor = new TagHelperAttributeDescriptor
                 {
                     Name = lowerKebabName,
@@ -146,15 +161,13 @@ namespace ViewComponentTagHelper
                     TypeName = parameter.ParameterType.FullName
                 };
 
-                // CR: typeof(string.FullName) ?? CHeck
-                if (tagHelperAttributeDescriptor.TypeName == "System.String"
-                    || tagHelperAttributeDescriptor.TypeName.Equals("String"))
+                var tagHelperType = Type.GetType(tagHelperAttributeDescriptor.TypeName);
+                if (tagHelperType.Equals(typeof(string)))
                 {
                     tagHelperAttributeDescriptor.IsStringProperty = true;
                 }
 
                 descriptors.Add(tagHelperAttributeDescriptor);
-
                 if (!parameter.HasDefaultValue)
                 {
                     var requiredAttributeDescriptor = new TagHelperRequiredAttributeDescriptor
@@ -169,34 +182,6 @@ namespace ViewComponentTagHelper
             requiredAttributeDescriptors = requiredDescriptors;
 
             return true;
-        }
-
-        // CR: Remove and expose.
-        // TagHelperDescriptorFactory returns this lower-kebab attribute as a full tag name.
-        // However, this is called after the file is returned.
-        private string GetLowerKebab(string word)
-        {
-            if (word.Length == 0) return "";
-
-            var stringBuilder = new StringBuilder();
-            var wordArray = word.ToCharArray();
-
-            // If capitalized and not the first character, will replace with dash and lower case.
-            stringBuilder.Append(Char.ToLower(wordArray[0]));
-            for (var i = 1; i < wordArray.Length; i++)
-            {
-                var character = wordArray[i];
-                if (Char.IsUpper(character))
-                {
-                    stringBuilder.Append("-" + Char.ToLower(character));
-                }
-                else
-                {
-                    stringBuilder.Append(character);
-                }
-            }
-
-            return stringBuilder.ToString();
         }
     }
 }
