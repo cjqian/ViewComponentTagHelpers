@@ -21,11 +21,26 @@ namespace AspNetCore
 #pragma warning disable 0414
         private string __tagHelperStringValueBuffer = null;
 #pragma warning restore 0414
+        // type Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext
+        // name __tagHelperExecutionContext
+        // value 
         private global::Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperExecutionContext __tagHelperExecutionContext = null;
+        // type Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperRunner
+        // name __tagHelperRunner
+        // value 
         private global::Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperRunner __tagHelperRunner = null;
+        // type Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperScopeManager
+        // name __tagHelperScopeManager
+        // value 
         private global::Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperScopeManager __tagHelperScopeManager = null;
+        // type Microsoft.AspNetCore.Mvc.TagHelpers.EnvironmentTagHelper
+        // name __Microsoft_AspNetCore_Mvc_TagHelpers_EnvironmentTagHelper
+        // value 
         private global::Microsoft.AspNetCore.Mvc.TagHelpers.EnvironmentTagHelper __Microsoft_AspNetCore_Mvc_TagHelpers_EnvironmentTagHelper = null;
-        private __ViewComponentTagHelper_Web_DanRothViewComponentTagHelper = null;
+        // type ViewComponentTagHelper.Web.DanRothViewComponentTagHelper
+        // name __ViewComponentTagHelper_Web_DanRothViewComponentTagHelper
+        // value 
+        private ViewComponentTagHelper.Web.DanRothViewComponentTagHelper __ViewComponentTagHelper_Web_DanRothViewComponentTagHelper = null;
         private static readonly global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute __tagHelperAttribute_0 = new global::Microsoft.AspNetCore.Razor.TagHelpers.TagHelperAttribute("jacket-color", "green", global::Microsoft.AspNetCore.Razor.TagHelpers.HtmlAttributeValueStyle.DoubleQuotes);
 #line hidden
         public _Views_Home_Index_cshtml()
@@ -50,7 +65,7 @@ namespace AspNetCore
         {
             __tagHelperRunner = __tagHelperRunner ?? new global::Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperRunner();
             __tagHelperScopeManager = __tagHelperScopeManager ?? new global::Microsoft.AspNetCore.Razor.Runtime.TagHelpers.TagHelperScopeManager(StartTagHelperWritingScope, EndTagHelperWritingScope);
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("environment", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "3871b2969f7249be9433336d87fead52", async () => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("environment", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.StartTagAndEndTag, "30933fbd9984425cb3aa5ecc08098ded", async () => {
             }
             );
             __Microsoft_AspNetCore_Mvc_TagHelpers_EnvironmentTagHelper = CreateTagHelper<global::Microsoft.AspNetCore.Mvc.TagHelpers.EnvironmentTagHelper>();
@@ -63,10 +78,10 @@ namespace AspNetCore
             BeginContext(27, 48, true);
             WriteLiteral("\r\n<vc:about email=\"asdf\" phone-number=\"asdf\"/>\r\n");
             EndContext();
-            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("vc:dan-roth", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "43a42cbec127498f902d7420dce78012", async () => {
+            __tagHelperExecutionContext = __tagHelperScopeManager.Begin("vc:dan-roth", global::Microsoft.AspNetCore.Razor.TagHelpers.TagMode.SelfClosing, "a0b9dfbe66594229a90bcce402e422f0", async () => {
             }
             );
-            __ViewComponentTagHelper_Web_DanRothViewComponentTagHelper = CreateTagHelper<>();
+            __ViewComponentTagHelper_Web_DanRothViewComponentTagHelper = CreateTagHelper<global::ViewComponentTagHelper.Web.DanRothViewComponentTagHelper>();
             __tagHelperExecutionContext.Add(__ViewComponentTagHelper_Web_DanRothViewComponentTagHelper);
             __ViewComponentTagHelper_Web_DanRothViewComponentTagHelper.jacketColor = (string)__tagHelperAttribute_0.Value;
             __tagHelperExecutionContext.AddTagHelperAttribute(__tagHelperAttribute_0);
@@ -80,29 +95,27 @@ namespace AspNetCore
             EndContext();
         }
 #pragma warning restore 1998
+        // HELLO, WORLD!
+        [Microsoft.AspNetCore.Razor.TagHelpers.HtmlTargetElement("vc:dan-roth", TagStructure = Microsoft.AspNetCore.Razor.TagHelpers.TagStructure.NormalOrSelfClosing)]
+        private class DanRothViewComponentTagHelper : Microsoft.AspNetCore.Razor.TagHelpers.TagHelper
+        {
+            private readonly IViewComponentHelper _viewComponentHelper;
+            public DanRothViewComponentTagHelper(IViewComponentHelper viewComponentHelper)
+            {
+                _viewComponentHelper = viewComponentHelper;
+            }
+
+            [ViewContext]
+            public ViewContext ViewContext { get; set; }
+            public System.String jacketColor { get; set; }
+
+            public override async Task ProcessAsync(Microsoft.AspNetCore.Razor.TagHelpers.TagHelperContext context, Microsoft.AspNetCore.Razor.TagHelpers.TagHelperOutput output)
+            {
+                ((IViewContextAware)_viewComponentHelper).Contextualize(ViewContext);
+                var viewContent = await _viewComponentHelper.InvokeAsync("DanRoth", new { jacketColor });
+                output.TagName = null;
+                output.Content.SetHtmlContent(viewContent);
+            }
+        }
     }
-
-    [Microsoft.AspNetCore.Razor.TagHelpers.HtmlTargetElement("vc:dan-roth", TagStructure = Microsoft.AspNetCore.Razor.TagHelpers.TagStructure.NormalOrSelfClosing)]
-    public class ViewComponentTagHelper.Web.DanRothViewComponentTagHelper : Microsoft.AspNetCore.Razor.TagHelpers.TagHelper
-{
-private readonly IViewComponentHelper _viewComponentHelper;
-    public ViewComponentTagHelper.Web.DanRothViewComponentTagHelper (IViewComponentHelper viewComponentHelper)
-{
-_viewComponentHelper = viewComponentHelper;
-}
-
-[ViewContext]
-public ViewContext ViewContext { get; set; }
-public System.String jacketColor { get; set; }
-
-public override async Task ProcessAsync(Microsoft.AspNetCore.Razor.TagHelpers.TagHelperContext context, Microsoft.AspNetCore.Razor.TagHelpers.TagHelperOutput output)
-{
-    ((IViewContextAware)_viewComponentHelper).Contextualize(ViewContext);
-    var viewContent = await _viewComponentHelper.InvokeAsync("DanRoth", new { jacketColor });
-    output.TagName = null;
-    output.Content.SetHtmlContent(viewContent);
-}
-}
-
-}
-*/
+}*/

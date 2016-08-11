@@ -104,7 +104,7 @@ namespace ViewComponentTagHelper
             propertyBag["ViewComponentShortName"] = viewComponentDescriptor.ShortName;
             propertyBag["ViewComponentName"] = viewComponentDescriptor.TypeInfo.Name;
             propertyBag["ViewComponentTypeName"] = viewComponentDescriptor.TypeInfo.FullName;
-            propertyBag["GeneratedViewComponentTagHelperName"] = $"__Generated__{viewComponentDescriptor.TypeInfo.Name}TagHelper";
+            propertyBag["ViewComponentTagHelperTypeName"] = $"{viewComponentDescriptor.TypeInfo.Name}TagHelper";
              
             var tagName = TagHelperDescriptorFactory.ToHtmlCase(viewComponentDescriptor.ShortName);
             //var tagName = TagHelperDescriptorFactory.ToHtmlCase(viewComponentDescriptor.ShortName);
