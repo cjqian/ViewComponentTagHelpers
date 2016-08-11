@@ -24,12 +24,6 @@ cd ../Microsoft.AspNetCore.Razor.Tools
 dotnet restore
 dotnet pack -o C:/Users/t-crqian/Documents/LocalPackages
 
-# Restore and build from sample
-echo "Restore and build from sample. "
-cd ../../../ViewComponentTagHelper/sample/ViewComponentTagHelper.Web/
-dotnet restore
-dotnet build
-
 echo "Resolving tag helpers. "
 #dotnet razor-tooling resolve-taghelpers ./project.json ViewComponentTagHelper.Web 
 #dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.TagHelpers 
