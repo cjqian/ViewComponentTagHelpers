@@ -28,8 +28,7 @@ namespace ViewComponentTagHelper
                 documentLocation, 
                 errorSink);
 
-            var viewComponentTagHelperDescriptors = _descriptorFactory.ResolveDescriptorsInAssembly(assemblyName);
-
+            var viewComponentTagHelperDescriptors = _descriptorFactory.CreateDescriptors(assemblyName, null, errorSink);
             var descriptors = tagHelperDescriptors.Concat(viewComponentTagHelperDescriptors);
             return descriptors;
         }
