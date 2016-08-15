@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.ViewComponents;
 using Microsoft.AspNetCore.Razor;
@@ -91,23 +90,27 @@ namespace ViewComponentTagHelper
             // Set attributes.
             IEnumerable<TagHelperAttributeDescriptor> attributeDescriptors;
             IEnumerable<TagHelperRequiredAttributeDescriptor> requiredAttributeDescriptors;
+            Dictionary<string, object> requiredAttributeValues;
 
             if (!TryGetAttributeDescriptors(viewComponentDescriptor,
                 out attributeDescriptors,
-                out requiredAttributeDescriptors))
+                out requiredAttributeDescriptors,
+                out requiredAttributeValues))
             {
                 throw new Exception("Something went wrong.");
             }
 
             // Because this is a view component, we want to add to the property bag.
-            var propertyBag = new Dictionary<string, string>();
+            // CR: Do we need all of the items in this property bag?
+            var propertyBag = new Dictionary<string, object>();
             propertyBag["ViewComponentShortName"] = viewComponentDescriptor.ShortName;
             propertyBag["ViewComponentName"] = viewComponentDescriptor.TypeInfo.Name;
             propertyBag["ViewComponentTypeName"] = viewComponentDescriptor.TypeInfo.FullName;
             propertyBag["ViewComponentTagHelperTypeName"] = $"{viewComponentDescriptor.TypeInfo.Name}TagHelper";
-             
+            propertyBag["ViewComponentDefaultValues"] = requiredAttributeValues;
+
             var tagName = TagHelperDescriptorFactory.ToHtmlCase(viewComponentDescriptor.ShortName);
-            //var tagName = TagHelperDescriptorFactory.ToHtmlCase(viewComponentDescriptor.ShortName);
+
             var tagHelperDescriptor = new TagHelperDescriptor
             {
                 TagName = FormatTagName(viewComponentDescriptor),
@@ -135,20 +138,20 @@ namespace ViewComponentTagHelper
 
         private string FormatTypeName(ViewComponentDescriptor viewComponentDescriptor) =>
             $"{viewComponentDescriptor.DisplayName}TagHelper";
-        //__Generated__ViewComponentTagHelper.Web.AboutViewComponentTagHelper
 
         // TODO: Add support to HtmlTargetElement, HtmlAttributeName (vc: asdfadf)
         // TODO: Add validation of view component; valid attribute names?
         private bool TryGetAttributeDescriptors(
             ViewComponentDescriptor viewComponentDescriptor,
             out IEnumerable<TagHelperAttributeDescriptor> attributeDescriptors,
-            out IEnumerable<TagHelperRequiredAttributeDescriptor> requiredAttributeDescriptors
+            out IEnumerable<TagHelperRequiredAttributeDescriptor> requiredAttributeDescriptors,
+            out Dictionary<string, object> requiredAttributeValues
             )
         {
-
             var methodParameters = viewComponentDescriptor.MethodInfo.GetParameters();
             var descriptors = new List<TagHelperAttributeDescriptor>();
             var requiredDescriptors = new List<TagHelperRequiredAttributeDescriptor>();
+            var requiredValues = new Dictionary<string, object>();
 
             for (var i = 0; i < methodParameters.Length; i++)
             {
@@ -168,18 +171,25 @@ namespace ViewComponentTagHelper
                 }
 
                 descriptors.Add(tagHelperAttributeDescriptor);
-                if (!parameter.HasDefaultValue)
+
+                if (parameter.HasDefaultValue)
+                {
+                    requiredValues[lowerKebabName] = parameter.DefaultValue;
+                }
+                else
                 {
                     var requiredAttributeDescriptor = new TagHelperRequiredAttributeDescriptor
                     {
                         Name = lowerKebabName
                     };
+
                     requiredDescriptors.Add(requiredAttributeDescriptor);
                 }
             }
 
             attributeDescriptors = descriptors;
             requiredAttributeDescriptors = requiredDescriptors;
+            requiredAttributeValues = requiredValues;
 
             return true;
         }
