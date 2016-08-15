@@ -104,9 +104,7 @@ namespace ViewComponentTagHelper
             // CR: Do we need all of the items in this property bag?
             var propertyBag = new Dictionary<string, object>();
             propertyBag["ViewComponentShortName"] = viewComponentDescriptor.ShortName;
-            propertyBag["ViewComponentName"] = viewComponentDescriptor.TypeInfo.Name;
-            propertyBag["ViewComponentTypeName"] = viewComponentDescriptor.TypeInfo.FullName;
-            propertyBag["ViewComponentTagHelperTypeName"] = $"{viewComponentDescriptor.TypeInfo.Name}TagHelper";
+            propertyBag["ViewComponentTagHelperTypeName"] = $"__Generated__{viewComponentDescriptor.TypeInfo.Name}TagHelper";
             propertyBag["ViewComponentDefaultValues"] = requiredAttributeValues;
 
             var tagName = TagHelperDescriptorFactory.ToHtmlCase(viewComponentDescriptor.ShortName);
