@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ViewComponentTagHelper;
+using Microsoft.AspNetCore.Mvc.Razor.ViewComponentTagHelpers;
 
 namespace ViewComponentTagHelper.Web
 {

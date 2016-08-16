@@ -1,7 +1,5 @@
 ﻿{
   "projects": [
-    "src",
     "sample"
   ]
-  //"projects": [ "sample", "C:\\Users\\t-crqian\\Documents\\Visual Studio 2015\\Projects\\Razor" ]
 }

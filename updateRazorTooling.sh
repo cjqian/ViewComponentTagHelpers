@@ -3,19 +3,12 @@ echo "Remove NuGet packages. "
 rm -rf C:/Users/t-crqian/.nuget/packages/.tools
 rm -rf C:/Users/t-crqian/.nuget/packages/Microsoft.AspNetCore.Razor.Design
 rm -rf C:/Users/t-crqian/.nuget/packages/Microsoft.AspNetCore.Razor.Tools
-rm -rf C:/Users/t-crqian/.nuget/packages/ViewComponentTagHelper
-
-# Build ViewComponentTagHelper.
-cd src/ViewComponentTagHelper
-dotnet restore
-dotnet build
-dotnet pack -o C:/Users/t-crqian/Documents/LocalPackages
-cd ../../
 
 # Restore and pack Microsoft.AspNetCore.Razor.Design
 echo "Restore and pack Microsoft.AspNetCore.Razor.Design. "
 cd ../RazorTooling/src/Microsoft.AspNetCore.Razor.Design
 dotnet restore
+dotnet build
 dotnet pack -o C:/Users/t-crqian/Documents/LocalPackages
 
 # Restore and pack Microsoft.AspNetCore.Razor.Tools

@@ -6,13 +6,13 @@
   "dependencies": {
     "Microsoft.AspNetCore.Diagnostics": "1.1.0-*",
     "Microsoft.AspNetCore.Mvc": "1.1.0-*",
+    "Microsoft.AspNetCore.Mvc.Razor": "1.1.0-*",
     "Microsoft.AspNetCore.Mvc.Razor.Host": "1.1.0-*",
     "Microsoft.AspNetCore.Mvc.ViewFeatures": "1.1.0-*",
     "Microsoft.AspNetCore.Razor.Design": "1.0.0-*",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-*",
     "Microsoft.AspNetCore.Server.Kestrel": "1.1.0-*",
-    "Microsoft.Extensions.Logging.Console": "1.1.0-*",
-    "ViewComponentTagHelper": "1.0.0-*"
+    "Microsoft.Extensions.Logging.Console": "1.1.0-*"
   },
   "frameworks": {
     "netcoreapp1.0": {
