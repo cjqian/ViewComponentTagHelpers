@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc.Razor.ViewComponentTagHelpers;
+using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 
 namespace ViewComponentTagHelper.Web
 {
@@ -13,6 +14,7 @@ namespace ViewComponentTagHelper.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddSingleton<ICompilationService, DynamicRosylnCompilationService>();
             services.AddViewComponentTagHelper();
         }
 
