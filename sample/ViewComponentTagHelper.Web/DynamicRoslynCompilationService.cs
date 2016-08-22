@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using Microsoft.AspNetCore.Mvc.Razor;
+﻿using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.Razor.Internal;
 using Microsoft.Extensions.Logging;
@@ -10,17 +9,11 @@ namespace ViewComponentTagHelper.Web
     public class DynamicRosylnCompilationService : DefaultRoslynCompilationService, ICompilationService
     {
         public DynamicRosylnCompilationService(
-            ApplicationPartManager partManager,
-            IOptions<RazorViewEngineOptions> optionsAccessor,
+            CSharpCompiler compiler,
             IRazorViewEngineFileProviderAccessor fileProviderAccessor,
+            IOptions<RazorViewEngineOptions> optionsAccessor,
             ILoggerFactory loggerFactory
-            )
-                : base(
-                      partManager,
-                      optionsAccessor,
-                      fileProviderAccessor,
-                      loggerFactory
-                      )
+            ) : base(compiler, fileProviderAccessor, optionsAccessor, loggerFactory) 
         {
         }
 

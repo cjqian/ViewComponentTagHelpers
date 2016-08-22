@@ -4,6 +4,8 @@ rm -rf C:/Users/t-crqian/.nuget/packages/Microsoft.AspNetCore.Razor.Runtime
 # Build and move Razor.
 echo "Building Razor."
 cd ../Razor/src/Microsoft.AspNetCore.Razor
+rm -rf bin/
+rm -rf obj/
 dotnet restore
 dotnet build
 dotnet pack -o C:/Users/t-crqian/Documents/LocalPackages
@@ -13,6 +15,8 @@ cp bin/Debug/net451/Microsoft.AspNetCore.Razor.dll "C:\Program Files (x86)\Micro
 # Build and move Razor.
 echo "Building Razor."
 cd ../Microsoft.AspNetCore.Razor.Runtime
+rm -rf bin/
+rm -rf obj/
 dotnet restore
 dotnet build
 dotnet pack -o C:/Users/t-crqian/Documents/LocalPackages
