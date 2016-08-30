@@ -9,15 +9,16 @@ namespace ViewComponentTagHelper.Web
     public class DanRothViewComponent : ViewComponent  
     {
         private string _asciiTextString = @"C:\Users\t-crqian\Documents\visual studio 2015\Projects\ViewComponentTagHelper\sample\ViewComponentTagHelper.Web\wwwroot\DanRoth.txt";
+
         public IViewComponentResult Invoke(string jacketColor)
         {
             this.GetType().GetTypeInfo();
 
 
-            //mark all as star
+            // mark all as star
             IEnumerable<char> jacketColors = new List<char> { 'N', 'D', '8', '0', 'M' };
             string[] ascii_text = System.IO.File.ReadAllLines(_asciiTextString);
-            //jacket
+            // jacket
             for (int i = 100; i < ascii_text.Length; i++)
             {
                 foreach (char c in ascii_text[i])
@@ -29,7 +30,7 @@ namespace ViewComponentTagHelper.Web
                 }
             }
 
-            //replace all stars
+            // replace all stars
             string replacement = getSpan(jacketColor);
             for (int i = 0; i < ascii_text.Length; i++)
             {

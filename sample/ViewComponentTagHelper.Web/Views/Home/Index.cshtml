@@ -1,3 +1,7 @@
 ﻿<environment></environment>
 <vc:about email="asdf" phone-number="asdf" badge-id=123/>
 <vc:dan-roth jacket-color="orange"/>
+<vc:about email="asdf" phone-number=""></vc:about>
+<vc:about email="asdf" phone-number="123"/>
+
+@await Component.InvokeAsync("DanRoth", new { jacketColor = "blue" });

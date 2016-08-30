@@ -20,6 +20,7 @@ dotnet pack -o C:/Users/t-crqian/Documents/LocalPackages
 echo "Resolving tag helpers. "
 cd ../../../ViewComponentTagHelper/sample/ViewComponentTagHelper.Web
 dotnet restore
+dotnet build
 dotnet razor-tooling resolve-taghelpers ./project.json ViewComponentTagHelper.Web 
 #dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.TagHelpers 
 #dotnet razor-tooling resolve-taghelpers ./project.json Microsoft.AspNetCore.Mvc.Razor 

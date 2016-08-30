@@ -9,7 +9,6 @@ namespace ViewComponentTagHelper.Web
     {
         public IViewComponentResult Invoke(string email, String phoneNumber, int badgeID=5)
         {
-            this.GetType().GetTypeInfo();
             return View("About", new { email, phoneNumber, badgeID});
         }
     }
